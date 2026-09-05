@@ -56,6 +56,22 @@ const protect = async (req, res, next) => {
 };
 
 /**
+ * Role-Based Access Control (RBAC) Middleware
+ * Usage: authorize('admin'), authorize('instructor', 'admin')
+ */
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `User role '${req.user ? req.user.role : 'guest'}' is not authorized to access this resource`,
+      });
+    }
+    next();
+  };
+};
+
+/**
  * Optional Authentication: Populates req.user if Bearer token is provided
  */
 const optionalAuth = async (req, res, next) => {
