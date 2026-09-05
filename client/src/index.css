@@ -94,3 +94,15 @@ input, textarea, select {
     grid-template-columns: 1fr !important;
   }
 }
+
+.learning-workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 1080px) {
+  .learning-workspace-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
