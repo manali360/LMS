@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   Play, CheckCircle2, Circle, Download, FileText, 
-  HelpCircle, ArrowLeft, Award, Loader2, Check, Clock, BookOpen
+  HelpCircle, ArrowLeft, Award, Loader2, Check, Clock, BookOpen, X
 } from 'lucide-react';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const CourseLearningPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [course, setCourse] = useState(null);
   const [progress, setProgress] = useState(null);
@@ -17,6 +19,7 @@ const CourseLearningPage = () => {
   const [loading, setLoading] = useState(true);
   const [marking, setMarking] = useState(false);
   const [noteText, setNoteText] = useState('');
+  const [showCertModal, setShowCertModal] = useState(false);
 
   // Fetch Course & Progress
   useEffect(() => {
@@ -61,8 +64,8 @@ const CourseLearningPage = () => {
 
       if (res.success) {
         setProgress(res.data);
-        if (res.data.isCompleted) {
-          alert('🎉 Congratulations! You have completed 100% of this course!');
+        if (res.data.isCompleted || res.data.overallPercentage === 100) {
+          setShowCertModal(true);
         }
       }
     } catch (err) {
@@ -559,6 +562,75 @@ const CourseLearningPage = () => {
 
         </div>
       </div>
+
+      {/* 🎓 Completion Congratulations Modal */}
+      {showCertModal && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
+          zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 24
+        }}>
+          <div style={{
+            background: '#ffffff', borderRadius: 16, padding: '40px 48px',
+            maxWidth: 540, width: '100%', textAlign: 'center',
+            display: 'flex', flexDirection: 'column', gap: 20,
+            boxShadow: '0 20px 60px rgba(0,0,0,0.25)', position: 'relative'
+          }}>
+            <button onClick={() => setShowCertModal(false)} style={{
+              position: 'absolute', top: 16, right: 16, background: 'none',
+              border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex',
+              alignItems: 'center', justifyContent: 'center'
+            }}>
+              <X size={20} />
+            </button>
+
+            <div style={{ fontSize: 56 }}>🎓</div>
+
+            <div>
+              <h2 style={{ fontSize: 26, fontWeight: 900, color: '#1c1d1f', margin: '0 0 10px' }}>
+                Congratulations, {user?.name}!
+              </h2>
+              <p style={{ fontSize: 15, color: '#6b7280', margin: 0, lineHeight: 1.6 }}>
+                You've successfully completed{' '}
+                <strong style={{ color: '#1a8754' }}>{course?.title}</strong>!
+                <br />Your certificate is ready to view and share.
+              </p>
+            </div>
+
+            <div style={{
+              background: '#f0fdf4', border: '1px solid #d1fae5',
+              borderRadius: 10, padding: '12px 20px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
+            }}>
+              <CheckCircle2 size={18} color="#1a8754" />
+              <span style={{ fontSize: 14, color: '#15803d', fontWeight: 600 }}>
+                100% Course Completed
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to={`/certificate/${courseId}`} style={{ textDecoration: 'none' }}>
+                <button style={{
+                  padding: '12px 24px', borderRadius: 8, background: '#1a8754',
+                  color: '#fff', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(26,135,84,0.3)',
+                  display: 'flex', alignItems: 'center', gap: 6
+                }}>
+                  <Award size={16} />
+                  View My Certificate
+                </button>
+              </Link>
+              <button onClick={() => setShowCertModal(false)} style={{
+                padding: '12px 20px', borderRadius: 8, background: '#f3f4f6',
+                color: '#374151', fontWeight: 600, fontSize: 14,
+                border: '1px solid #e5e7eb', cursor: 'pointer'
+              }}>
+                Continue Learning
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

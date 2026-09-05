@@ -48,23 +48,33 @@ exports.markLectureCompleted = async (req, res, next) => {
     }
 
     // Check if course is 100% completed
-    if (progress.overallPercentage === 100 && !progress.isCompleted) {
+    if (progress.overallPercentage === 100) {
       progress.isCompleted = true;
-      progress.completedAt = new Date();
+      if (!progress.completedAt) progress.completedAt = new Date();
 
-      // Auto-generate Certificate if not created
-      const certId = `LP-${Math.random().toString(36).substring(2, 9).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
-      
-      const certificate = await Certificate.create({
-        certificateId: certId,
-        student: studentId,
-        course: courseId,
-        instructor: course.instructor,
-        issueDate: new Date(),
-        verificationUrl: `/verify-certificate/${certId}`,
-      });
+      // Check if Certificate already exists for this student and course
+      let certificate = await Certificate.findOne({ student: studentId, course: courseId });
+      if (!certificate) {
+        const certId = `LP-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+        
+        certificate = await Certificate.create({
+          certificateId: certId,
+          student: studentId,
+          course: courseId,
+          instructor: course.instructor?._id || course.instructor,
+          issueDate: new Date(),
+          verificationUrl: `/verify-certificate/${certId}`,
+        });
+      }
 
       progress.certificate = certificate._id;
+
+      // Update Enrollment status to completed if exists
+      const Enrollment = require('../models/Enrollment');
+      await Enrollment.findOneAndUpdate(
+        { student: studentId, course: courseId },
+        { status: 'completed', completedAt: new Date() }
+      );
     }
 
     await progress.save();
