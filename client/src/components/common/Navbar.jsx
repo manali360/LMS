@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GraduationCap, Search, Menu, X, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
+import { GraduationCap, Search, Menu, X, LogOut, LayoutDashboard, Heart, BookOpen, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -16,185 +15,296 @@ const Navbar = () => {
     if (search.trim()) navigate(`/courses?search=${encodeURIComponent(search.trim())}`);
   };
 
-  const getDashboardPath = () => {
-    if (user?.role === 'admin') return '/admin/dashboard';
-    if (user?.role === 'instructor') return '/instructor/dashboard';
-    return '/student/dashboard';
-  };
-
-  const getRoleBadgeStyle = (role) => {
-    switch (role) {
-      case 'admin':
-        return 'bg-amber-500/10 text-amber-300 border-amber-500/30';
-      case 'instructor':
-        return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
-      default:
-        return 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30';
-    }
-  };
+  const isCurrent = (path) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0b0f19]/80 backdrop-blur-xl border-b border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
+    <header style={{ background: '#fff', borderBottom: '1px solid #e8e8e8' }} className="sticky top-0 z-50">
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', height: 64, gap: 20 }}>
 
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-transform">
-              <GraduationCap className="w-5 h-5 text-white" />
+          {/* Logo */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 8,
+              background: '#1a8754', display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              <GraduationCap size={20} color="#fff" />
             </div>
-            <span className="font-outfit font-black text-xl text-white tracking-tight">
-              Learn<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Pulse</span>
+            <span style={{ fontSize: 18, fontWeight: 800, color: '#1c1d1f', letterSpacing: '-0.3px' }}>
+              Learn<span style={{ color: '#1a8754' }}>Pulse</span>
             </span>
           </Link>
 
-          {/* Search Bar (Desktop) */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-md hidden md:block">
-            <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: 440 }} className="hidden md:block">
+            <div style={{ position: 'relative' }}>
+              <Search size={16} color="#6b7280" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 type="text"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search courses, skills, instructors..."
-                className="w-full pl-10 pr-4 py-2 bg-slate-900/90 border border-slate-800 rounded-full text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/40 transition-all"
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search for anything..."
+                style={{
+                  width: '100%',
+                  padding: '9px 16px 9px 40px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: 24,
+                  fontSize: 14,
+                  color: '#1c1d1f',
+                  background: '#fff',
+                  outline: 'none',
+                }}
+                onFocus={e => e.target.style.borderColor = '#1a8754'}
+                onBlur={e => e.target.style.borderColor = '#d1d5db'}
               />
             </div>
           </form>
 
-          {/* Desktop Navigation Links & Auth */}
-          <div className="hidden md:flex items-center gap-5 shrink-0">
-            <Link
-              to="/courses"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === '/courses' ? 'text-indigo-400 font-semibold' : 'text-slate-300 hover:text-white'
-              }`}
-            >
+          {/* Nav Links */}
+          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: 20 }}>
+            <Link to="/courses" style={{
+              fontSize: 14, fontWeight: 500, color: location.pathname === '/courses' ? '#1a8754' : '#1c1d1f',
+              textDecoration: 'none', whiteSpace: 'nowrap'
+            }}>
               Browse Courses
             </Link>
+            {isAuthenticated && (
+              <Link to="/wishlist" style={{
+                fontSize: 14, fontWeight: 500, color: location.pathname === '/wishlist' ? '#1a8754' : '#1c1d1f',
+                textDecoration: 'none', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4
+              }}>
+                <Heart size={14} /> Wishlist
+              </Link>
+            )}
+          </nav>
 
+          {/* Auth */}
+          <div className="hidden md:flex" style={{ alignItems: 'center', gap: 8, marginLeft: 'auto', flexShrink: 0 }}>
             {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <NotificationDropdown />
+              <>
+                {/* INSTRUCTOR ROLE: Provide BOTH Student Dashboard and Instructor Studio */}
+                {user?.role === 'instructor' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <button
+                      onClick={() => navigate('/student/dashboard')}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        padding: '7px 13px', borderRadius: 4,
+                        border: isCurrent('/student/dashboard') ? '1px solid #1a8754' : '1px solid #e5e7eb',
+                        background: isCurrent('/student/dashboard') ? '#1a8754' : '#ffffff',
+                        color: isCurrent('/student/dashboard') ? '#ffffff' : '#374151',
+                        fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                        transition: 'all 0.15s'
+                      }}
+                      title="View your enrolled courses and learning progress"
+                    >
+                      <BookOpen size={14} /> Student View
+                    </button>
+                    <button
+                      onClick={() => navigate('/instructor/dashboard')}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        padding: '7px 13px', borderRadius: 4,
+                        border: isCurrent('/instructor/dashboard') ? '1px solid #1a8754' : '1px solid #e5e7eb',
+                        background: isCurrent('/instructor/dashboard') ? '#1a8754' : '#ffffff',
+                        color: isCurrent('/instructor/dashboard') ? '#ffffff' : '#374151',
+                        fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                        transition: 'all 0.15s'
+                      }}
+                      title="Manage your created courses and analytics"
+                    >
+                      <LayoutDashboard size={14} /> Instructor Studio
+                    </button>
+                  </div>
+                )}
 
-                <Link to={getDashboardPath()}>
-                  <button className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-600/15 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/25 hover:text-white text-xs font-semibold transition-all cursor-pointer">
-                    <LayoutDashboard className="w-4 h-4" />
-                    <span>Dashboard</span>
+                {/* ADMIN ROLE */}
+                {user?.role === 'admin' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <button
+                      onClick={() => navigate('/admin/dashboard')}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        padding: '7px 13px', borderRadius: 4,
+                        border: isCurrent('/admin/dashboard') ? '1px solid #1a8754' : '1px solid #e5e7eb',
+                        background: isCurrent('/admin/dashboard') ? '#1a8754' : '#ffffff',
+                        color: isCurrent('/admin/dashboard') ? '#ffffff' : '#374151',
+                        fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      <ShieldCheck size={14} /> Admin Panel
+                    </button>
+                    <button
+                      onClick={() => navigate('/student/dashboard')}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        padding: '7px 13px', borderRadius: 4,
+                        border: '1px solid #e5e7eb', background: '#fff',
+                        color: '#374151', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      <BookOpen size={14} /> Student View
+                    </button>
+                  </div>
+                )}
+
+                {/* STUDENT ROLE */}
+                {user?.role === 'student' && (
+                  <button
+                    onClick={() => navigate('/student/dashboard')}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '7px 14px', borderRadius: 4,
+                      border: '1px solid #1a8754', background: isCurrent('/student/dashboard') ? '#1a8754' : '#fff',
+                      color: isCurrent('/student/dashboard') ? '#fff' : '#1a8754', fontSize: 13, fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <LayoutDashboard size={14} /> Dashboard
                   </button>
-                </Link>
+                )}
 
-                <div className="flex items-center gap-2.5 pl-1 border-l border-slate-800">
+                {/* User Avatar Chip */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '4px 10px', borderRadius: 6, background: '#f9fafb',
+                  border: '1px solid #f3f4f6'
+                }}>
                   <img
                     src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop'}
                     alt={user?.name}
-                    className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-500/30"
+                    style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #d1fae5' }}
                   />
-                  <div className="text-left hidden lg:block">
-                    <div className="text-xs font-semibold text-white leading-tight">{user?.name?.split(' ')[0]}</div>
-                    <span className={`inline-block text-[10px] font-bold px-1.5 py-0.2 rounded border uppercase tracking-wider ${getRoleBadgeStyle(user?.role)}`}>
-                      {user?.role}
-                    </span>
+                  <div style={{ fontSize: 12, lineHeight: 1.25 }}>
+                    <div style={{ fontWeight: 600, color: '#1c1d1f' }}>{user?.name?.split(' ')[0]}</div>
+                    <div style={{ color: '#1a8754', fontSize: 10, textTransform: 'uppercase', fontWeight: 700 }}>{user?.role}</div>
                   </div>
                 </div>
 
+                {/* Sign out */}
                 <button
                   onClick={logout}
-                  title="Sign out"
-                  className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-800/60 border border-slate-800 transition-colors cursor-pointer"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    padding: '7px 11px', borderRadius: 4, border: '1px solid #e5e7eb',
+                    background: '#fff', color: '#6b7280', fontSize: 13, cursor: 'pointer'
+                  }}
+                  title="Log out of your account"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut size={13} /> Sign out
                 </button>
-              </div>
+              </>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white transition-colors"
-                >
-                  Log in
+              <>
+                <Link to="/login">
+                  <button style={{
+                    padding: '8px 16px', borderRadius: 4,
+                    border: '1px solid #1c1d1f', background: '#fff',
+                    color: '#1c1d1f', fontSize: 14, fontWeight: 700,
+                    cursor: 'pointer'
+                  }}>
+                    Log in
+                  </button>
                 </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-md shadow-indigo-600/20 transition-all"
-                >
-                  Get Started
+                <Link to="/register">
+                  <button style={{
+                    padding: '8px 16px', borderRadius: 4,
+                    border: '1px solid #1a8754', background: '#1a8754',
+                    color: '#fff', fontSize: 14, fontWeight: 700,
+                    cursor: 'pointer'
+                  }}>
+                    Sign up
+                  </button>
                 </Link>
-              </div>
+              </>
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer"
+            className="md:hidden"
+            style={{ padding: 6, background: 'none', border: 'none', color: '#1c1d1f', marginLeft: 'auto' }}
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#0e1424] border-b border-slate-800 px-4 py-5 space-y-4">
-          <form onSubmit={handleSearch}>
+        <div style={{ background: '#fff', borderTop: '1px solid #e8e8e8', padding: '16px 24px 24px' }}>
+          <form onSubmit={handleSearch} style={{ marginBottom: 16 }}>
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search courses..."
-              className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search for anything..."
+              style={{
+                width: '100%', padding: '10px 14px',
+                border: '1px solid #9e9e9e', borderRadius: 4, fontSize: 14
+              }}
             />
           </form>
-          <div className="flex flex-col gap-2 pt-2">
-            <Link
-              to="/"
-              onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-slate-800/50"
-            >
-              Home
-            </Link>
-            <Link
-              to="/courses"
-              onClick={() => setMobileOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg hover:bg-slate-800/50"
-            >
-              Browse Courses
-            </Link>
-
-            {isAuthenticated ? (
-              <div className="pt-3 border-t border-slate-800 space-y-2">
-                <Link
-                  to={getDashboardPath()}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-indigo-300 bg-indigo-600/10 border border-indigo-500/20 rounded-xl"
-                >
-                  <LayoutDashboard className="w-4 h-4" /> Dashboard ({user?.role})
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <Link to="/" onClick={() => setMobileOpen(false)} style={{ padding: '10px 4px', fontSize: 14, fontWeight: 500, color: '#1c1d1f', borderBottom: '1px solid #f5f5f5' }}>Home</Link>
+            <Link to="/courses" onClick={() => setMobileOpen(false)} style={{ padding: '10px 4px', fontSize: 14, fontWeight: 500, color: '#1c1d1f', borderBottom: '1px solid #f5f5f5' }}>Browse Courses</Link>
+            {isAuthenticated && (
+              <Link to="/wishlist" onClick={() => setMobileOpen(false)} style={{ padding: '10px 4px', fontSize: 14, fontWeight: 500, color: '#1c1d1f', borderBottom: '1px solid #f5f5f5' }}>My Wishlist</Link>
+            )}
+            {!isAuthenticated ? (
+              <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                <Link to="/login" onClick={() => setMobileOpen(false)} style={{ flex: 1 }}>
+                  <button style={{ width: '100%', padding: '10px', border: '1px solid #1c1d1f', borderRadius: 4, fontWeight: 700, fontSize: 14, background: '#fff', color: '#1c1d1f' }}>Log in</button>
                 </Link>
-                <button
-                  onClick={() => { logout(); setMobileOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors text-left"
-                >
-                  <LogOut className="w-4 h-4" /> Sign out
-                </button>
+                <Link to="/register" onClick={() => setMobileOpen(false)} style={{ flex: 1 }}>
+                  <button style={{ width: '100%', padding: '10px', border: 'none', borderRadius: 4, fontWeight: 700, fontSize: 14, background: '#1a8754', color: '#fff' }}>Sign up</button>
+                </Link>
               </div>
             ) : (
-              <div className="pt-3 border-t border-slate-800 flex gap-2">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 text-center px-4 py-2.5 text-sm font-medium text-slate-200 bg-slate-900 border border-slate-800 rounded-xl"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 text-center px-4 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-xl"
-                >
-                  Sign up
-                </Link>
+              <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {user?.role === 'instructor' && (
+                  <>
+                    <button
+                      onClick={() => { navigate('/instructor/dashboard'); setMobileOpen(false); }}
+                      style={{ width: '100%', padding: '10px', border: '1px solid #1a8754', borderRadius: 4, fontWeight: 700, fontSize: 14, background: '#1a8754', color: '#fff', cursor: 'pointer' }}
+                    >
+                      Instructor Studio
+                    </button>
+                    <button
+                      onClick={() => { navigate('/student/dashboard'); setMobileOpen(false); }}
+                      style={{ width: '100%', padding: '10px', border: '1px solid #d1d5db', borderRadius: 4, fontWeight: 600, fontSize: 14, background: '#fff', color: '#374151', cursor: 'pointer' }}
+                    >
+                      Student View Dashboard
+                    </button>
+                  </>
+                )}
+                {user?.role === 'admin' && (
+                  <>
+                    <button
+                      onClick={() => { navigate('/admin/dashboard'); setMobileOpen(false); }}
+                      style={{ width: '100%', padding: '10px', border: '1px solid #1a8754', borderRadius: 4, fontWeight: 700, fontSize: 14, background: '#1a8754', color: '#fff', cursor: 'pointer' }}
+                    >
+                      Admin Panel
+                    </button>
+                    <button
+                      onClick={() => { navigate('/student/dashboard'); setMobileOpen(false); }}
+                      style={{ width: '100%', padding: '10px', border: '1px solid #d1d5db', borderRadius: 4, fontWeight: 600, fontSize: 14, background: '#fff', color: '#374151', cursor: 'pointer' }}
+                    >
+                      Student View Dashboard
+                    </button>
+                  </>
+                )}
+                {user?.role === 'student' && (
+                  <button
+                    onClick={() => { navigate('/student/dashboard'); setMobileOpen(false); }}
+                    style={{ width: '100%', padding: '10px', border: '1px solid #1a8754', borderRadius: 4, fontWeight: 700, fontSize: 14, background: '#1a8754', color: '#fff', cursor: 'pointer' }}
+                  >
+                    Student Dashboard
+                  </button>
+                )}
+                <button onClick={() => { logout(); setMobileOpen(false); }} style={{ width: '100%', padding: '10px', border: '1px solid #e8e8e8', borderRadius: 4, fontWeight: 600, fontSize: 14, background: '#fff', color: '#6b7280', cursor: 'pointer' }}>Sign out</button>
               </div>
             )}
           </div>

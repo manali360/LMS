@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Star, Clock, Users, ArrowRight, Trash2, Loader2 } from 'lucide-react';
+import { Heart, Star, ArrowRight, Trash2, Loader2 } from 'lucide-react';
 import api from '../services/api';
-import Button from '../components/common/Button';
 
 const WishlistPage = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const fallbackThumbnail = 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&auto=format&fit=crop&q=80';
 
   const fetchWishlist = async () => {
     try {
@@ -35,61 +36,151 @@ const WishlistPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px 24px', display: 'flex', flexDirection: 'column', gap: 28 }}>
       
-      <div className="space-y-2">
-        <span className="text-xs font-bold uppercase tracking-widest text-pink-400 font-outfit">Bookmarks</span>
-        <h1 className="text-3xl font-extrabold font-outfit text-white flex items-center gap-2">
-          <Heart className="w-8 h-8 text-pink-500 fill-pink-500" /> My Saved Wishlist
+      {/* Header */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#1a8754', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Saved Courses
+        </span>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Heart size={28} color="#e11d48" fill="#e11d48" /> My Saved Wishlist
         </h1>
-        <p className="text-slate-400 text-sm">Courses you bookmarked to enroll in later.</p>
+        <p style={{ fontSize: 14, color: '#4b5563', margin: 0 }}>Courses you bookmarked to enroll in later.</p>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 0', gap: 12 }}>
+          <Loader2 size={36} color="#1a8754" className="animate-spin" />
+          <span style={{ fontSize: 14, color: '#6b7280' }}>Loading wishlist...</span>
         </div>
       ) : courses.length === 0 ? (
-        <div className="p-12 text-center glass-panel rounded-3xl space-y-4 max-w-md mx-auto">
-          <Heart className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-lg font-bold font-outfit text-white">Your Wishlist is Empty</h3>
-          <p className="text-xs text-slate-400">Explore the marketplace to bookmark your favorite courses.</p>
-          <Link to="/courses"><Button variant="primary">Browse Courses</Button></Link>
+        <div style={{
+          background: '#f0fdf4',
+          border: '1px solid #d1fae5',
+          borderRadius: 8,
+          padding: '48px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          gap: 16,
+          maxWidth: 480,
+          margin: '0 auto'
+        }}>
+          <Heart size={44} color="#1a8754" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1c1d1f', margin: 0 }}>Your Wishlist is Empty</h3>
+            <p style={{ fontSize: 13, color: '#4b5563', margin: 0 }}>Explore the marketplace to bookmark your favorite courses.</p>
+          </div>
+          <Link to="/courses" style={{ textDecoration: 'none' }}>
+            <button style={{
+              padding: '11px 24px',
+              borderRadius: 4,
+              background: '#1a8754',
+              color: '#ffffff',
+              fontSize: 14,
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer'
+            }}>
+              Browse Courses
+            </button>
+          </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
           {courses.map((course) => (
-            <div key={course._id} className="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between h-full">
+            <div key={course._id} style={{
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+            }}>
               <div>
-                <div className="relative aspect-video overflow-hidden bg-slate-900">
-                  <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                <div style={{ position: 'relative', width: '100%', height: 165, background: '#f3f4f6', overflow: 'hidden' }}>
+                  <img
+                    src={course.thumbnail || fallbackThumbnail}
+                    alt={course.title}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = fallbackThumbnail;
+                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                   <button
                     onClick={() => handleRemove(course._id)}
-                    className="absolute top-3 right-3 p-2 rounded-full bg-slate-950/80 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
+                      padding: '6px 8px',
+                      borderRadius: '50%',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      border: '1px solid #e5e7eb',
+                      color: '#dc2626',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
                     title="Remove from wishlist"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 size={14} />
                   </button>
                 </div>
 
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      <strong className="text-slate-200">{course.averageRating || 5.0}</strong>
+                <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, color: '#1c1d1f' }}>
+                      <Star size={14} color="#f59e0b" fill="#f59e0b" />
+                      {course.averageRating || 5.0}
                     </span>
-                    <span className="font-bold text-indigo-400">{course.isFree ? 'FREE' : `$${course.price}`}</span>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: '#1a8754' }}>
+                      {course.isFree ? 'FREE' : `$${course.price}`}
+                    </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white font-outfit line-clamp-2">{course.title}</h3>
+                  <h3 style={{
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: '#1c1d1f',
+                    margin: 0,
+                    lineHeight: 1.35,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                  }}>
+                    {course.title}
+                  </h3>
                 </div>
               </div>
 
-              <div className="p-4 pt-0">
-                <Link to={`/courses/${course._id}`}>
-                  <Button variant="gradient" size="sm" fullWidth icon={ArrowRight}>
-                    View & Enroll
-                  </Button>
+              <div style={{ padding: '0 16px 16px' }}>
+                <Link to={`/courses/${course._id}`} style={{ textDecoration: 'none' }}>
+                  <button style={{
+                    width: '100%',
+                    padding: '10px 16px',
+                    borderRadius: 4,
+                    background: '#1a8754',
+                    color: '#ffffff',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6
+                  }}>
+                    View & Enroll <ArrowRight size={14} />
+                  </button>
                 </Link>
               </div>
 

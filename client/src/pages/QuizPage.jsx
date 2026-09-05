@@ -104,137 +104,209 @@ const QuizPage = () => {
   const currentQ = quiz.questions[currentQIndex];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
+    <div style={{ maxWidth: 860, margin: '0 auto', padding: '36px 24px', display: 'flex', flexDirection: 'column', gap: 24 }}>
       
       {/* Quiz Header Bar */}
-      <div className="p-6 glass-panel rounded-3xl border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400 font-outfit">Assessment Engine</span>
-          <h1 className="text-2xl font-bold font-outfit text-white">{quiz.title}</h1>
+      <div style={{
+        background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 8, padding: '20px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#1a8754', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Assessment Engine
+          </span>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+            {quiz.title}
+          </h1>
         </div>
 
         {!result && (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-sm font-bold text-indigo-300">
-            <Clock className="w-4 h-4 text-indigo-400 animate-pulse" /> Time Remaining: {formatTime(timeLeft)}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '8px 16px', borderRadius: 20, background: '#f0fdf4',
+            border: '1px solid #d1fae5', fontSize: 14, fontWeight: 700, color: '#15803d'
+          }}>
+            <Clock size={16} color="#15803d" /> Time Remaining: {formatTime(timeLeft)}
           </div>
         )}
       </div>
 
       {/* QUIZ RESULTS VIEW */}
       {result ? (
-        <div className="glass-panel p-8 rounded-3xl border-slate-800 space-y-6 text-center">
-          <div className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center ${
-            result.passed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
-          }`}>
-            {result.passed ? <Award className="w-10 h-10" /> : <XCircle className="w-10 h-10" />}
+        <div style={{
+          background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 8,
+          padding: 32, display: 'flex', flexDirection: 'column', gap: 24,
+          textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: '50%', margin: '0 auto',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: result.passed ? '#dcfce7' : '#fee2e2',
+            color: result.passed ? '#15803d' : '#dc2626',
+            border: `1px solid ${result.passed ? '#bbf7d0' : '#fecaca'}`
+          }}>
+            {result.passed ? <Award size={36} /> : <XCircle size={36} />}
           </div>
 
-          <div className="space-y-2">
-            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
-              result.passed ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'
-            }`}>
-              {result.passed ? 'PASSED' : 'NEEDS IMPROVEMENT'}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <span style={{
+              display: 'inline-block', margin: '0 auto', padding: '4px 14px', borderRadius: 20,
+              fontSize: 12, fontWeight: 700, textTransform: 'uppercase',
+              background: result.passed ? '#dcfce7' : '#fee2e2',
+              color: result.passed ? '#15803d' : '#991b1b'
+            }}>
+              {result.passed ? 'PASSED ✓' : 'NEEDS IMPROVEMENT'}
             </span>
-            <h2 className="text-3xl font-extrabold font-outfit text-white">Score: {result.score} / {result.totalMarks}</h2>
-            <p className="text-sm text-slate-400">Passing Score Required: {result.passingScore}% ({result.percentage}% Achieved)</p>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+              Score: {result.score} / {result.totalMarks}
+            </h2>
+            <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
+              Passing Score Required: {result.passingScore}% ({result.percentage}% Achieved)
+            </p>
           </div>
 
           {/* Detailed Question Review List */}
-          <div className="text-left space-y-4 pt-6 border-t border-slate-800">
-            <h3 className="text-lg font-bold font-outfit text-white">Question Breakdown</h3>
+          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 16, paddingTop: 20, borderTop: '1px solid #e5e7eb' }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1c1d1f', margin: 0 }}>Question Breakdown</h3>
             {result.details?.map((detail, idx) => (
-              <div key={idx} className="p-4 glass-card rounded-2xl border-slate-800/80 space-y-2 text-xs">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="font-semibold text-white text-sm">
+              <div key={idx} style={{
+                padding: 16, borderRadius: 8, background: '#f9fafb',
+                border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13
+              }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                  <div style={{ fontWeight: 600, color: '#1c1d1f', fontSize: 14 }}>
                     {idx + 1}. {detail.questionText}
                   </div>
                   {detail.isCorrect ? (
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold shrink-0">Correct +5</span>
+                    <span style={{ padding: '2px 8px', borderRadius: 4, background: '#dcfce7', color: '#15803d', fontWeight: 700, flexShrink: 0 }}>
+                      Correct +5
+                    </span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold shrink-0">Incorrect</span>
+                    <span style={{ padding: '2px 8px', borderRadius: 4, background: '#fee2e2', color: '#dc2626', fontWeight: 700, flexShrink: 0 }}>
+                      Incorrect
+                    </span>
                   )}
                 </div>
 
-                <div className="text-slate-400 space-y-1">
-                  <div>Your Answer: <strong className="text-slate-200">{detail.selectedOption >= 0 ? detail.options[detail.selectedOption] : 'None'}</strong></div>
-                  <div>Correct Answer: <strong className="text-emerald-400">{detail.options[detail.correctAnswerIndex]}</strong></div>
-                  {detail.explanation && <div className="text-indigo-300 pt-1 italic">Explanation: {detail.explanation}</div>}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, color: '#4b5563' }}>
+                  <div>Your Answer: <strong style={{ color: '#1c1d1f' }}>{detail.selectedOption >= 0 ? detail.options[detail.selectedOption] : 'None'}</strong></div>
+                  <div>Correct Answer: <strong style={{ color: '#15803d' }}>{detail.options[detail.correctAnswerIndex]}</strong></div>
+                  {detail.explanation && <div style={{ color: '#1a8754', paddingTop: 4, fontStyle: 'italic' }}>Explanation: {detail.explanation}</div>}
                 </div>
               </div>
             ))}
           </div>
 
-          <Button variant="primary" size="lg" onClick={() => navigate(-1)}>Return to Course</Button>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              padding: '12px 24px', borderRadius: 4, background: '#1a8754', color: '#fff',
+              fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer', margin: '0 auto'
+            }}
+          >
+            Return to Course
+          </button>
         </div>
       ) : (
         /* QUIZ TAKING INTERFACE */
-        <div className="glass-panel p-8 rounded-3xl border-slate-800 space-y-6">
+        <div style={{
+          background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 8,
+          padding: 32, display: 'flex', flexDirection: 'column', gap: 24,
+          boxShadow: '0 1px 4px rgba(0,0,0,0.05)'
+        }}>
           
           {/* Question Stepper Indicator */}
-          <div className="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            fontSize: 13, color: '#6b7280', paddingBottom: 12, borderBottom: '1px solid #e5e7eb'
+          }}>
             <span>Question {currentQIndex + 1} of {quiz.questions.length}</span>
-            <span>Marks: {currentQ.marks || 5}</span>
+            <span style={{ fontWeight: 600, color: '#1c1d1f' }}>Marks: {currentQ.marks || 5}</span>
           </div>
 
           {/* Question Text */}
-          <h3 className="text-xl font-bold font-outfit text-white">
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1c1d1f', margin: 0, lineHeight: 1.5 }}>
             {currentQ.questionText}
           </h3>
 
           {/* Options Grid */}
-          <div className="space-y-3">
-            {currentQ.options?.map((opt, oIdx) => (
-              <button
-                key={oIdx}
-                type="button"
-                onClick={() => handleOptionSelect(currentQ._id, oIdx)}
-                className={`w-full p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between text-sm ${
-                  answers[currentQ._id] === oIdx
-                    ? 'bg-indigo-600/20 border-indigo-500 text-white font-semibold ring-1 ring-indigo-500'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
-                }`}
-              >
-                <span>{opt}</span>
-                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                  answers[currentQ._id] === oIdx ? 'border-indigo-400 bg-indigo-500' : 'border-slate-600'
-                }`}>
-                  {answers[currentQ._id] === oIdx && <div className="w-2 h-2 rounded-full bg-white"></div>}
-                </div>
-              </button>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {currentQ.options?.map((opt, oIdx) => {
+              const isSelected = answers[currentQ._id] === oIdx;
+              return (
+                <button
+                  key={oIdx}
+                  type="button"
+                  onClick={() => handleOptionSelect(currentQ._id, oIdx)}
+                  style={{
+                    width: '100%', padding: '14px 18px', borderRadius: 6,
+                    textAlign: 'left', cursor: 'pointer', display: 'flex',
+                    alignItems: 'center', justifyContent: 'space-between', fontSize: 14,
+                    background: isSelected ? '#f0fdf4' : '#ffffff',
+                    border: isSelected ? '2px solid #1a8754' : '1px solid #d1d5db',
+                    color: isSelected ? '#15803d' : '#1c1d1f',
+                    fontWeight: isSelected ? 600 : 400,
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  <span>{opt}</span>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: '50%',
+                    border: isSelected ? '2px solid #1a8754' : '2px solid #d1d5db',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isSelected ? '#1a8754' : 'transparent', flexShrink: 0
+                  }}>
+                    {isSelected && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff' }}></div>}
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-6 border-t border-slate-800">
-            <Button
-              variant="secondary"
-              size="md"
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            paddingTop: 20, borderTop: '1px solid #e5e7eb'
+          }}>
+            <button
               disabled={currentQIndex === 0}
               onClick={() => setCurrentQIndex((i) => i - 1)}
-              icon={ArrowLeft}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '10px 18px', borderRadius: 4, background: '#ffffff',
+                border: '1px solid #d1d5db', color: currentQIndex === 0 ? '#9ca3af' : '#374151',
+                fontSize: 14, fontWeight: 600, cursor: currentQIndex === 0 ? 'not-allowed' : 'pointer'
+              }}
             >
-              Previous
-            </Button>
+              <ArrowLeft size={16} /> Previous
+            </button>
 
             {currentQIndex < quiz.questions.length - 1 ? (
-              <Button
-                variant="primary"
-                size="md"
+              <button
                 onClick={() => setCurrentQIndex((i) => i + 1)}
-                icon={ArrowRight}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '10px 20px', borderRadius: 4, background: '#1a8754',
+                  border: 'none', color: '#ffffff', fontSize: 14, fontWeight: 700, cursor: 'pointer'
+                }}
               >
-                Next Question
-              </Button>
+                Next Question <ArrowRight size={16} />
+              </button>
             ) : (
-              <Button
-                variant="gradient"
-                size="md"
+              <button
                 onClick={handleSubmitQuiz}
                 disabled={submitting}
-                icon={Sparkles}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '10px 22px', borderRadius: 4, background: '#1a8754',
+                  border: 'none', color: '#ffffff', fontSize: 14, fontWeight: 700,
+                  cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1
+                }}
               >
-                {submitting ? 'Evaluating...' : 'Submit Quiz'}
-              </Button>
+                <Sparkles size={16} /> {submitting ? 'Evaluating...' : 'Submit Quiz'}
+              </button>
             )}
           </div>
 

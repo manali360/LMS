@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Users, Star, DollarSign, Plus, Edit, Trash2, Eye, Loader2, Layers, CheckCircle2, Clock } from 'lucide-react';
+import { BookOpen, Users, Star, DollarSign, Plus, Trash2, Eye, Loader2 } from 'lucide-react';
 import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import Button from '../components/common/Button';
 
 const InstructorDashboard = () => {
-  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,9 +36,9 @@ const InstructorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
-        <p className="text-sm font-medium text-slate-400">Loading instructor studio metrics...</p>
+      <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <Loader2 size={36} color="#1a8754" className="animate-spin" />
+        <p style={{ fontSize: 14, color: '#6b7280', fontWeight: 500 }}>Loading instructor studio metrics...</p>
       </div>
     );
   }
@@ -49,121 +46,295 @@ const InstructorDashboard = () => {
   const { totalCourses = 0, totalStudents = 0, averageRating = 5.0, totalRevenue = 0, courses = [] } = stats || {};
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px 24px', display: 'flex', flexDirection: 'column', gap: 32 }}>
       
-      {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-purple-400 font-outfit">Instructor Studio</span>
-          <h1 className="text-3xl font-extrabold font-outfit text-white">Course Management</h1>
+      {/* ── Header Bar ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#1a8754', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Instructor Studio
+          </span>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+            Course Management
+          </h1>
         </div>
 
-        <Link to="/instructor/course-builder">
-          <Button variant="gradient" size="md" icon={Plus}>
-            Create New Course
-          </Button>
-        </Link>
-      </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <Link to="/student/dashboard" style={{ textDecoration: 'none' }}>
+            <button style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '12px 18px',
+              borderRadius: 4,
+              background: '#ffffff',
+              color: '#1a8754',
+              border: '1px solid #1a8754',
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'background 0.15s'
+            }}>
+              <BookOpen size={16} /> Student View Dashboard
+            </button>
+          </Link>
 
-      {/* Metric Cards Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-            <BookOpen className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{totalCourses}</div>
-            <div className="text-xs text-slate-400">Created Courses</div>
-          </div>
-        </div>
-
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-            <Users className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{totalStudents}</div>
-            <div className="text-xs text-slate-400">Enrolled Students</div>
-          </div>
-        </div>
-
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            <Star className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{averageRating} / 5.0</div>
-            <div className="text-xs text-slate-400">Average Rating</div>
-          </div>
-        </div>
-
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <DollarSign className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">${totalRevenue}</div>
-            <div className="text-xs text-slate-400">Estimated Revenue</div>
-          </div>
+          <Link to="/instructor/course-builder" style={{ textDecoration: 'none' }}>
+            <button style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '12px 22px',
+              borderRadius: 4,
+              background: '#1a8754',
+              color: '#ffffff',
+              fontSize: 14,
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(26,135,84,0.3)',
+              transition: 'background 0.15s'
+            }}>
+              <Plus size={16} /> Create New Course
+            </button>
+          </Link>
         </div>
       </div>
 
-      {/* Courses Management Table */}
-      <div className="glass-panel p-6 rounded-3xl border-slate-800 space-y-4">
-        <h3 className="text-lg font-bold font-outfit text-white">Your Courses Portfolio</h3>
+      {/* ── Metric Cards ── */}
+      <div className="dashboard-metrics-grid">
+        
+        {/* Card 1: Created Courses */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#ecfdf5',
+            border: '1px solid #d1fae5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#1a8754',
+            flexShrink: 0
+          }}>
+            <BookOpen size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{totalCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Created Courses</span>
+          </div>
+        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/90 uppercase text-slate-400 font-semibold border-b border-slate-800">
-              <tr>
-                <th className="p-3">Course Name</th>
-                <th className="p-3">Price</th>
-                <th className="p-3">Students</th>
-                <th className="p-3">Rating</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-right">Actions</th>
+        {/* Card 2: Enrolled Students */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#eff6ff',
+            border: '1px solid #dbeafe',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#2563eb',
+            flexShrink: 0
+          }}>
+            <Users size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{totalStudents}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Enrolled Students</span>
+          </div>
+        </div>
+
+        {/* Card 3: Average Rating */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#fffbeb',
+            border: '1px solid #fef3c7',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#d97706',
+            flexShrink: 0
+          }}>
+            <Star size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{averageRating} / 5.0</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Average Rating</span>
+          </div>
+        </div>
+
+        {/* Card 4: Estimated Revenue */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#ecfdf5',
+            border: '1px solid #d1fae5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#1a8754',
+            flexShrink: 0
+          }}>
+            <DollarSign size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>${totalRevenue}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Estimated Revenue</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Courses Management Table ── */}
+      <div style={{
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
+        borderRadius: 8,
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 18,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+            Your Courses Portfolio
+          </h2>
+          {courses.length > 0 && (
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>{courses.length} Course{courses.length > 1 ? 's' : ''}</span>
+          )}
+        </div>
+
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Course Name</th>
+                <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Price</th>
+                <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Students</th>
+                <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Rating</th>
+                <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Status</th>
+                <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody>
               {courses.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-400">
-                    No courses built yet. Click "Create New Course" to launch your first masterclass!
+                  <td colSpan={6} style={{ padding: '48px 16px', textAlign: 'center' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, maxWidth: 360, margin: '0 auto' }}>
+                      <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a8754' }}>
+                        <BookOpen size={22} />
+                      </div>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: '#1c1d1f' }}>No courses built yet</span>
+                      <span style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.5 }}>
+                        Click "Create New Course" to launch your first masterclass and start teaching!
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 courses.map((course) => (
-                  <tr key={course._id} className="hover:bg-slate-900/40 transition-colors">
-                    <td className="p-3 font-semibold text-white font-outfit">{course.title}</td>
-                    <td className="p-3">{course.price === 0 ? 'FREE' : `$${course.price}`}</td>
-                    <td className="p-3">{course.totalStudents || 0}</td>
-                    <td className="p-3 flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {course.averageRating || 5.0}
+                  <tr key={course._id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                    <td style={{ padding: '14px 16px', fontWeight: 700, color: '#1c1d1f' }}>{course.title}</td>
+                    <td style={{ padding: '14px 16px', color: '#4b5563', fontWeight: 600 }}>
+                      {course.price === 0 ? <span style={{ color: '#1a8754' }}>FREE</span> : `$${course.price}`}
                     </td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
-                        course.approvalStatus === 'published'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          : course.approvalStatus === 'pending'
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                          : 'bg-slate-800 text-slate-400'
-                      }`}>
+                    <td style={{ padding: '14px 16px', color: '#4b5563' }}>{course.totalStudents || 0}</td>
+                    <td style={{ padding: '14px 16px', color: '#4b5563' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, color: '#1c1d1f' }}>
+                        <Star size={14} color="#f59e0b" fill="#f59e0b" /> {course.averageRating || 5.0}
+                      </span>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{
+                        padding: '4px 10px',
+                        borderRadius: 20,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        background: course.approvalStatus === 'published' ? '#dcfce7' : '#fef3c7',
+                        color: course.approvalStatus === 'published' ? '#15803d' : '#92400e',
+                        border: `1px solid ${course.approvalStatus === 'published' ? '#bbf7d0' : '#fde68a'}`
+                      }}>
                         {course.approvalStatus || 'published'}
                       </span>
                     </td>
-                    <td className="p-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link to={`/courses/${course._id}`}>
-                          <button className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white" title="Preview">
-                            <Eye className="w-4 h-4" />
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+                        <Link to={`/courses/${course._id}`} style={{ textDecoration: 'none' }}>
+                          <button style={{
+                            padding: '6px 10px',
+                            borderRadius: 4,
+                            background: '#f3f4f6',
+                            border: '1px solid #e5e7eb',
+                            color: '#4b5563',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }} title="Preview Course">
+                            <Eye size={14} />
                           </button>
                         </Link>
                         <button
                           onClick={() => handleDeleteCourse(course._id)}
-                          className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white transition-colors"
-                          title="Delete"
+                          style={{
+                            padding: '6px 10px',
+                            borderRadius: 4,
+                            background: '#fee2e2',
+                            border: '1px solid #fecaca',
+                            color: '#dc2626',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
+                          title="Delete Course"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>

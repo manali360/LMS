@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Clock, Users, BookOpen } from 'lucide-react';
+import { Star, Clock, Users } from 'lucide-react';
 
 const CourseCardPreview = ({ course }) => {
   const {
@@ -13,88 +13,109 @@ const CourseCardPreview = ({ course }) => {
     reviewsCount = 2341,
     studentsCount = 12500,
     duration = '32 total hours',
+    lecturesCount = 48,
     price = 49.99,
     isFree = false,
     thumbnail = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80',
   } = course || {};
 
   const instructorName = typeof instructor === 'object' ? instructor?.name : instructor;
-  const categoryName = typeof category === 'object' ? category?.name : category;
 
+  // Render star rating visually
   const fullStars = Math.floor(rating);
+  const hasHalf = rating % 1 >= 0.5;
 
   return (
-    <Link to={`/courses/${_id}`} className="block h-full no-underline">
-      <div className="glass-card rounded-2xl border border-slate-800/80 overflow-hidden hover:border-indigo-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group shadow-lg">
-        
-        {/* Thumbnail Container */}
-        <div className="relative aspect-video overflow-hidden bg-slate-900">
+    <Link to={`/courses/${_id}`} style={{ textDecoration: 'none', display: 'block' }}>
+      <div
+        style={{
+          background: '#fff',
+          border: '1px solid #e8e8e8',
+          borderRadius: 4,
+          overflow: 'hidden',
+          transition: 'box-shadow 0.15s ease',
+          cursor: 'pointer',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+        onMouseEnter={e => e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.12)'}
+        onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
+      >
+        {/* Thumbnail */}
+        <div style={{ aspectRatio: '16/9', overflow: 'hidden', background: '#f5f5f5' }}>
           <img
             src={thumbnail}
             alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          <div className="absolute top-3 right-3">
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900/80 backdrop-blur-md text-indigo-300 border border-indigo-500/30">
-              {level}
-            </span>
-          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+        {/* Body */}
+        <div style={{ padding: '12px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
           
-          <div className="space-y-2">
-            <div className="text-[11px] font-semibold text-indigo-400 uppercase tracking-wider">
-              {categoryName}
+          {/* Title */}
+          <h3 style={{
+            fontSize: 14, fontWeight: 700, color: '#1c1d1f',
+            lineHeight: 1.4, display: '-webkit-box',
+            WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+          }}>
+            {title}
+          </h3>
+
+          {/* Instructor */}
+          <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.3 }}>
+            {instructorName}
+          </p>
+
+          {/* Rating Row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#b4690e' }}>{rating}</span>
+            <div style={{ display: 'flex', gap: 1 }}>
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star
+                  key={s}
+                  size={12}
+                  fill={s <= fullStars ? '#e59819' : 'none'}
+                  color={s <= fullStars ? '#e59819' : '#d1d5db'}
+                />
+              ))}
             </div>
-
-            <h3 className="text-base font-bold font-outfit text-white group-hover:text-indigo-300 transition-colors line-clamp-2 leading-snug">
-              {title}
-            </h3>
-
-            <p className="text-xs text-slate-400 font-medium">
-              By <span className="text-slate-300">{instructorName}</span>
-            </p>
+            <span style={{ fontSize: 12, color: '#6b7280' }}>({reviewsCount.toLocaleString()})</span>
           </div>
 
-          <div className="space-y-3 pt-2 border-t border-slate-800/60">
-            {/* Rating & Meta */}
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-amber-400">{rating}</span>
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      size={12}
-                      className={s <= fullStars ? 'fill-amber-400 text-amber-400' : 'text-slate-600'}
-                    />
-                  ))}
-                </div>
-                <span className="text-[11px] text-slate-500">({reviewsCount.toLocaleString()})</span>
-              </div>
+          {/* Meta row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12, color: '#6b7280' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <Clock size={12} color="#6b7280" /> {duration}
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <Users size={12} color="#6b7280" /> {studentsCount.toLocaleString()}
+            </span>
+          </div>
 
-              <div className="flex items-center gap-1 text-[11px] text-slate-400">
-                <Clock size={12} className="text-indigo-400" />
-                <span>{duration}</span>
-              </div>
-            </div>
-
-            {/* Price & Action */}
-            <div className="flex items-center justify-between pt-1">
-              <div className="text-lg font-extrabold font-outfit text-white">
-                {isFree ? (
-                  <span className="text-emerald-400">Free</span>
-                ) : (
-                  <span>${price}</span>
-                )}
-              </div>
-
-              <span className="text-xs font-semibold text-indigo-400 group-hover:text-indigo-300 flex items-center gap-1">
-                Details &rarr;
+          {/* Price */}
+          <div style={{ marginTop: 'auto', paddingTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 16, fontWeight: 800, color: '#1c1d1f' }}>
+              {isFree ? 'Free' : `$${price}`}
+            </span>
+            {!isFree && (
+              <span style={{
+                fontSize: 11, fontWeight: 600, padding: '2px 6px',
+                background: '#f0fdf4', color: '#1a8754',
+                border: '1px solid #bbf7d0', borderRadius: 3
+              }}>
+                {level}
               </span>
-            </div>
+            )}
+            {isFree && (
+              <span style={{
+                fontSize: 11, fontWeight: 700, padding: '2px 8px',
+                background: '#1a8754', color: '#fff', borderRadius: 3
+              }}>
+                FREE
+              </span>
+            )}
           </div>
 
         </div>

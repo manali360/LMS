@@ -15,11 +15,11 @@ const Button = ({
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 
   const variants = {
-    primary: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/50 focus:ring-indigo-500 active:scale-[0.98]',
-    secondary: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 focus:ring-slate-600 active:scale-[0.98]',
-    outline: 'border border-indigo-500/50 hover:bg-indigo-500/10 text-indigo-400 focus:ring-indigo-500 active:scale-[0.98]',
-    ghost: 'text-slate-300 hover:text-white hover:bg-slate-800/60 focus:ring-slate-600',
-    gradient: 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-lg shadow-purple-500/25 active:scale-[0.98]',
+    primary: 'bg-[#1a8754] hover:bg-[#157347] text-white shadow-sm focus:ring-[#1a8754] active:scale-[0.98]',
+    secondary: 'bg-white hover:bg-gray-50 text-[#1c1d1f] border border-gray-300 focus:ring-gray-300 active:scale-[0.98]',
+    outline: 'border border-[#1a8754] hover:bg-[#f0fdf4] text-[#1a8754] focus:ring-[#1a8754] active:scale-[0.98]',
+    ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-300',
+    gradient: 'bg-[#1a8754] hover:bg-[#157347] text-white shadow-sm active:scale-[0.98]',
   };
 
   const sizes = {

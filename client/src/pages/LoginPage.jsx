@@ -1,31 +1,35 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { GraduationCap, Mail, Lock, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
+import { GraduationCap, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import Button from '../components/common/Button';
 
-const InputField = ({ label, type, name, value, onChange, placeholder, icon: Icon, extra }) => (
-  <div className="space-y-1.5">
-    <div className="flex justify-between items-center">
-      <label className="text-xs font-semibold text-slate-300">{label}</label>
+const InputField = ({ label, type, name, value, onChange, placeholder, extra }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <label style={{ fontSize: 13, fontWeight: 600, color: '#374151' }}>{label}</label>
       {extra}
     </div>
-    <div className="relative">
-      {Icon && (
-        <Icon className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-      )}
-      <input
-        type={type}
-        name={name}
-        required
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={`w-full py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all ${
-          Icon ? 'pl-10 pr-4' : 'px-4'
-        }`}
-      />
-    </div>
+    <input
+      type={type}
+      name={name}
+      required
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      style={{
+        width: '100%',
+        padding: '11px 14px',
+        border: '1px solid #d1d5db',
+        borderRadius: 6,
+        fontSize: 14,
+        color: '#1c1d1f',
+        background: '#fff',
+        outline: 'none',
+        transition: 'border-color 0.15s',
+      }}
+      onFocus={e => e.target.style.borderColor = '#1a8754'}
+      onBlur={e => e.target.style.borderColor = '#d1d5db'}
+    />
   </div>
 );
 
@@ -38,9 +42,9 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
       setError('Please fill in all fields.');
@@ -61,102 +65,104 @@ const LoginPage = () => {
     }
   };
 
-  const fillDemo = (email, role) => {
-    setFormData({ email, password: 'password123' });
-  };
-
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md space-y-6">
-        
-        {/* Card */}
-        <div className="glass-panel rounded-3xl p-8 border border-slate-800/80 shadow-2xl space-y-6">
-          
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-600/30">
-              <GraduationCap className="w-6 h-6" />
+    <div style={{
+      minHeight: '80vh', display: 'flex', alignItems: 'center',
+      justifyContent: 'center', padding: '40px 16px', background: '#f9f9f9'
+    }}>
+      <div style={{
+        width: '100%', maxWidth: 440,
+        background: '#fff', border: '1px solid #e5e7eb',
+        borderRadius: 8, padding: '40px 36px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)'
+      }}>
+
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 20 }}>
+            <div style={{ width: 40, height: 40, background: '#1a8754', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <GraduationCap size={22} color="#fff" />
             </div>
-            <h1 className="text-2xl font-extrabold font-outfit text-white">Welcome back</h1>
-            <p className="text-xs text-slate-400">Log in to continue your learning journey</p>
-          </div>
-
-          {error && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-300 text-xs text-center font-medium">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <InputField
-              label="Email address"
-              type="email"
-              name="email"
-              icon={Mail}
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-            />
-
-            <InputField
-              label="Password"
-              type="password"
-              name="password"
-              icon={Lock}
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-            />
-
-            <Button
-              type="submit"
-              variant="gradient"
-              size="lg"
-              fullWidth
-              disabled={loading}
-              icon={loading ? Loader2 : ArrowRight}
-            >
-              {loading ? 'Authenticating...' : 'Sign In'}
-            </Button>
-          </form>
-
-          {/* Quick Demo Logins */}
-          <div className="pt-2 border-t border-slate-800/80 space-y-2.5">
-            <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-center">
-              Quick Demo Accounts
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => fillDemo('student1@learnpulse.com', 'student')}
-                className="px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/20 text-center font-medium transition-colors cursor-pointer"
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('alex@learnpulse.com', 'instructor')}
-                className="px-2.5 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 text-center font-medium transition-colors cursor-pointer"
-              >
-                Instructor
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('admin@learnpulse.com', 'admin')}
-                className="px-2.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/20 text-center font-medium transition-colors cursor-pointer"
-              >
-                Admin
-              </button>
-            </div>
-          </div>
-
-          <div className="text-center text-xs text-slate-400">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-semibold">
-              Create an account
-            </Link>
-          </div>
-
+            <span style={{ fontSize: 20, fontWeight: 800, color: '#1c1d1f' }}>
+              Learn<span style={{ color: '#1a8754' }}>Pulse</span>
+            </span>
+          </Link>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1c1d1f', marginBottom: 6 }}>
+            Log in to your account
+          </h1>
+          <p style={{ fontSize: 13, color: '#6b7280' }}>
+            Welcome back! Please enter your details.
+          </p>
         </div>
+
+        {/* Error */}
+        {error && (
+          <div style={{
+            marginBottom: 16, padding: '10px 14px',
+            background: '#fef2f2', border: '1px solid #fecaca',
+            borderRadius: 6, fontSize: 13, color: '#dc2626'
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <InputField
+            label="Email address"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="name@example.com"
+          />
+          <InputField
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            extra={
+              <a href="#" style={{ fontSize: 12, color: '#1a8754', fontWeight: 600, textDecoration: 'none' }}>
+                Forgot password?
+              </a>
+            }
+          />
+
+          {/* Demo hint */}
+          <div style={{
+            padding: '12px 14px', background: '#f0fdf4',
+            border: '1px solid #bbf7d0', borderRadius: 6,
+            fontSize: 12, color: '#374151', lineHeight: 1.7
+          }}>
+            <strong style={{ color: '#1a8754' }}>Demo credentials:</strong><br />
+            Admin: <code>admin@learnpulse.com</code> / <code>password123</code><br />
+            Instructor: <code>alex@learnpulse.com</code> / <code>password123</code><br />
+            Student: <code>student1@learnpulse.com</code> / <code>password123</code>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%', padding: '13px',
+              background: loading ? '#6ee7b7' : '#1a8754',
+              color: '#fff', border: 'none', borderRadius: 6,
+              fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background 0.15s'
+            }}
+          >
+            {loading ? 'Signing in...' : 'Log in'}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <p style={{ textAlign: 'center', fontSize: 13, color: '#6b7280', marginTop: 24 }}>
+          Don't have an account?{' '}
+          <Link to="/register" style={{ color: '#1a8754', fontWeight: 700, textDecoration: 'none' }}>
+            Sign up for free
+          </Link>
+        </p>
 
       </div>
     </div>

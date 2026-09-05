@@ -6,55 +6,54 @@ const Footer = () => {
   const links = {
     'LearnPulse': ['About us', 'Careers', 'Blog', 'Press'],
     'Community': ['Students', 'Instructors', 'Affiliate', 'Partners'],
-    'Teach on LearnPulse': ['Become an instructor', 'Get the app', 'Teaching center', 'Rules & guidelines'],
+    'Teach on LearnPulse': ['Become an instructor', 'Get the app', 'About us', 'Contact us'],
     'Support': ['Help center', 'Verify certificate', 'Terms of service', 'Privacy policy'],
   };
 
   return (
-    <footer className="bg-[#070a12] text-slate-400 border-t border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer style={{ background: '#1c1d1f', color: '#d1d7dc', borderTop: '1px solid #3d3d3d' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '40px 24px' }}>
         
-        {/* Top Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 pb-10">
-          
-          {/* Brand Column */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-600/20">
-                <GraduationCap className="w-4 h-4 text-white" />
+        {/* Top row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr', gap: 32, marginBottom: 40 }} className="footer-grid">
+          {/* Brand */}
+          <div>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginBottom: 14 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 6, background: '#1a8754', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <GraduationCap size={18} color="#fff" />
               </div>
-              <span className="font-outfit font-black text-lg text-white tracking-tight">
-                Learn<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Pulse</span>
+              <span style={{ fontSize: 17, fontWeight: 800, color: '#fff' }}>
+                Learn<span style={{ color: '#34d399' }}>Pulse</span>
               </span>
             </Link>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              A modern, production-grade Learning Management System empowering students, instructors, and teams with interactive coursework, verifiable credentials, and hands-on masterclasses.
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: '#9ca3af', maxWidth: 220, marginBottom: 20 }}>
+              A modern LMS built for students, instructors, and administrators. Learn smarter, faster.
             </p>
-            <div className="flex gap-2 pt-2">
+            <div style={{ display: 'flex', gap: 10 }}>
               {[Github, Twitter, Linkedin].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-8 h-8 rounded-lg border border-slate-800 bg-slate-900/60 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/40 hover:bg-slate-800 transition-colors"
-                >
-                  <Icon size={14} />
+                <a key={i} href="#" style={{
+                  width: 34, height: 34, borderRadius: 4,
+                  border: '1px solid #3d3d3d', background: '#2d2d2d',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af'
+                }}>
+                  <Icon size={15} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Nav Columns */}
+          {/* Link columns */}
           {Object.entries(links).map(([heading, items]) => (
-            <div key={heading} className="space-y-3">
-              <h4 className="text-xs font-bold font-outfit uppercase tracking-wider text-slate-200">
+            <div key={heading}>
+              <h4 style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 {heading}
               </h4>
-              <ul className="space-y-2 text-xs">
-                {items.map((item) => (
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {items.map(item => (
                   <li key={item}>
-                    <a
-                      href="#"
-                      className="text-slate-400 hover:text-indigo-400 transition-colors"
+                    <a href="#" style={{ fontSize: 13, color: '#9ca3af', textDecoration: 'none' }}
+                      onMouseEnter={e => e.target.style.color = '#34d399'}
+                      onMouseLeave={e => e.target.style.color = '#9ca3af'}
                     >
                       {item}
                     </a>
@@ -63,14 +62,15 @@ const Footer = () => {
               </ul>
             </div>
           ))}
-
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} LearnPulse, Inc. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Engineered with <Heart size={12} className="text-rose-500 fill-rose-500" /> for lifelong learners worldwide
+        {/* Bottom bar */}
+        <div style={{ borderTop: '1px solid #3d3d3d', paddingTop: 24, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <p style={{ fontSize: 12, color: '#6b7280' }}>
+            © {new Date().getFullYear()} LearnPulse, Inc. All rights reserved.
+          </p>
+          <p style={{ fontSize: 12, color: '#6b7280', display: 'flex', alignItems: 'center', gap: 4 }}>
+            Built with <Heart size={12} color="#ef4444" fill="#ef4444" /> using MERN Stack
           </p>
         </div>
 

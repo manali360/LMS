@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
-  Star, Clock, BookOpen, Users, CheckCircle2, ShieldCheck, 
-  Play, Lock, FileText, ChevronDown, ChevronUp, Sparkles, Heart, ArrowRight, Loader2 
+  Star, Clock, BookOpen, Users, CheckCircle2,
+  Play, Lock, ChevronDown, ChevronUp, Sparkles, Heart, ArrowRight, Loader2 
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import Button from '../components/common/Button';
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
@@ -25,6 +24,8 @@ const CourseDetailsPage = () => {
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+
+  const fallbackThumbnail = 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&auto=format&fit=crop&q=80';
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -66,7 +67,6 @@ const CourseDetailsPage = () => {
     }
 
     if (course.price > 0 && !course.isFree) {
-      // Redirect to checkout page
       navigate(`/checkout/${course._id}`);
       return;
     }
@@ -127,138 +127,230 @@ const CourseDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
-        <p className="text-sm font-medium text-slate-400">Loading course breakdown...</p>
+      <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <Loader2 size={36} color="#1a8754" className="animate-spin" />
+        <p style={{ fontSize: 14, color: '#6b7280', fontWeight: 500 }}>Loading course breakdown...</p>
       </div>
     );
   }
 
   if (!course) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center py-16 space-y-4">
-        <h2 className="text-2xl font-bold font-outfit text-white">Course Not Found</h2>
-        <Link to="/courses"><Button variant="primary">Browse Marketplace</Button></Link>
+      <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '64px 24px', gap: 16 }}>
+        <h2 style={{ fontSize: 24, fontWeight: 800, color: '#1c1d1f' }}>Course Not Found</h2>
+        <Link to="/courses" style={{ textDecoration: 'none' }}>
+          <button style={{ padding: '10px 20px', borderRadius: 4, background: '#1a8754', color: '#fff', fontSize: 14, fontWeight: 700, border: 'none', cursor: 'pointer' }}>
+            Browse Marketplace
+          </button>
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 pb-20">
+    <div style={{ background: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', gap: 40, paddingBottom: 60 }}>
       
-      {/* HERO BANNER SECTION */}
-      <section className="bg-slate-900/80 border-b border-slate-800 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      {/* ── HERO BANNER SECTION ── */}
+      <section style={{ background: '#f0fdf4', borderBottom: '1px solid #d1fae5', padding: '48px 0' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+          <div className="course-details-grid">
             
-            {/* Details Column */}
-            <div className="lg:col-span-8 space-y-5">
-              <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-600/20 text-indigo-300 border border-indigo-500/30">
+            {/* Left Column: Course Intro */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Badges */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <span style={{
+                  padding: '4px 12px',
+                  borderRadius: 20,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  background: '#dcfce7',
+                  color: '#15803d',
+                  border: '1px solid #bbf7d0'
+                }}>
                   {course.category?.name || 'General'}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">{course.level}</span>
+                <span style={{
+                  padding: '4px 10px',
+                  borderRadius: 20,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  background: '#ffffff',
+                  color: '#4b5563',
+                  border: '1px solid #d1d5db'
+                }}>
+                  {course.level || 'All Levels'}
+                </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-outfit text-white tracking-tight leading-tight">
+              {/* Title */}
+              <h1 style={{ fontSize: 36, fontWeight: 800, color: '#1c1d1f', margin: 0, lineHeight: 1.25 }}>
                 {course.title}
               </h1>
 
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              {/* Description */}
+              <p style={{ fontSize: 16, color: '#4b5563', margin: 0, lineHeight: 1.65 }}>
                 {course.description}
               </p>
 
-              {/* Stats Row */}
-              <div className="flex flex-wrap items-center gap-6 text-xs text-slate-300 pt-2">
-                <span className="flex items-center gap-1.5">
-                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  <strong className="text-white text-sm">{course.averageRating || 5.0}</strong> ({course.ratingsCount || 0} reviews)
+              {/* Meta stats row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', paddingTop: 6, fontSize: 13, color: '#4b5563' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, color: '#1c1d1f' }}>
+                  <Star size={16} color="#f59e0b" fill="#f59e0b" />
+                  {course.averageRating || 5.0}
+                  <span style={{ color: '#6b7280', fontWeight: 400 }}>({course.ratingsCount || 0} reviews)</span>
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-pink-400" /> {course.totalStudents || 0} Students Enrolled
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Users size={16} color="#2563eb" /> {course.totalStudents || 0} Students Enrolled
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-indigo-400" /> {course.duration || '24 Hours'}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Clock size={16} color="#1a8754" /> {course.duration || '24 Hours'}
                 </span>
               </div>
 
               {/* Instructor snippet */}
-              <div className="flex items-center gap-3 pt-3">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 10 }}>
                 <img
                   src={course.instructor?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80'}
                   alt={course.instructor?.name}
-                  className="w-10 h-10 rounded-full border border-indigo-500/40 object-cover"
+                  style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '2px solid #d1fae5' }}
                 />
-                <div className="text-xs">
-                  <div className="text-slate-400">Created by</div>
-                  <div className="text-sm font-bold text-white font-outfit">{course.instructor?.name}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <span style={{ fontSize: 12, color: '#6b7280' }}>Created by</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1c1d1f' }}>{course.instructor?.name}</span>
                 </div>
               </div>
             </div>
 
-            {/* Floating Enrolment Card Column */}
-            <div className="lg:col-span-4">
-              <div className="glass-card p-6 rounded-3xl border-slate-800 shadow-2xl space-y-6">
-                
-                {/* Media Preview */}
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950">
-                  <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-slate-950/40 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-indigo-600/90 text-white flex items-center justify-center shadow-lg">
-                      <Play className="w-5 h-5 fill-white ml-0.5" />
-                    </div>
+            {/* Right Column: Floating Course Card */}
+            <div style={{
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              padding: 24,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 20
+            }}>
+              {/* Media Preview */}
+              <div style={{ position: 'relative', width: '100%', height: 210, borderRadius: 6, overflow: 'hidden', background: '#f3f4f6' }}>
+                <img
+                  src={course.thumbnail || fallbackThumbnail}
+                  alt={course.title}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = fallbackThumbnail;
+                  }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'rgba(0,0,0,0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <div style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: '50%',
+                    background: '#1a8754',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.25)'
+                  }}>
+                    <Play size={20} fill="#ffffff" style={{ marginLeft: 3 }} />
                   </div>
                 </div>
+              </div>
 
-                {/* Price Display */}
-                <div className="flex items-baseline justify-between">
-                  <div className="text-3xl font-extrabold font-outfit text-white">
-                    {course.isFree ? 'FREE' : `$${course.price}`}
-                  </div>
-                  <button
-                    onClick={handleToggleWishlist}
-                    className={`p-2.5 rounded-xl border transition-colors cursor-pointer ${
-                      isWishlisted
-                        ? 'bg-pink-500/20 border-pink-500 text-pink-400'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-pink-500' : ''}`} />
+              {/* Price & Wishlist row */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f' }}>
+                  {course.isFree ? 'FREE' : `$${course.price}`}
+                </span>
+                <button
+                  onClick={handleToggleWishlist}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    border: '1px solid #e5e7eb',
+                    background: isWishlisted ? '#ffe4e6' : '#ffffff',
+                    color: isWishlisted ? '#e11d48' : '#6b7280',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                >
+                  <Heart size={18} fill={isWishlisted ? '#e11d48' : 'none'} color={isWishlisted ? '#e11d48' : '#6b7280'} />
+                </button>
+              </div>
+
+              {/* CTA Action */}
+              {isEnrolled ? (
+                <Link to={`/learning/${course._id}`} style={{ textDecoration: 'none' }}>
+                  <button style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    borderRadius: 4,
+                    background: '#1a8754',
+                    color: '#ffffff',
+                    fontSize: 15,
+                    fontWeight: 700,
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    boxShadow: '0 2px 6px rgba(26,135,84,0.3)'
+                  }}>
+                    <Play size={16} /> Continue Learning
                   </button>
+                </Link>
+              ) : (
+                <button
+                  disabled={enrolling}
+                  onClick={handleEnroll}
+                  style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    borderRadius: 4,
+                    background: '#1a8754',
+                    color: '#ffffff',
+                    fontSize: 15,
+                    fontWeight: 700,
+                    border: 'none',
+                    cursor: enrolling ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    boxShadow: '0 2px 6px rgba(26,135,84,0.3)'
+                  }}
+                >
+                  <Sparkles size={16} />
+                  {enrolling ? 'Enrolling...' : course.isFree ? 'Enroll Now (Free)' : `Enroll Now ($${course.price})`}
+                </button>
+              )}
+
+              {/* Benefits Checklist */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: 12, borderTop: '1px solid #f3f4f6' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151' }}>
+                  <CheckCircle2 size={16} color="#1a8754" /> Full Lifetime Access
                 </div>
-
-                {/* CTA Action */}
-                {isEnrolled ? (
-                  <Link to={`/learning/${course._id}`}>
-                    <Button variant="gradient" fullWidth size="lg" icon={Play}>
-                      Continue Learning
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button
-                    variant="gradient"
-                    fullWidth
-                    size="lg"
-                    disabled={enrolling}
-                    onClick={handleEnroll}
-                    icon={Sparkles}
-                  >
-                    {enrolling ? 'Enrolling...' : course.isFree ? 'Enroll Now (Free)' : `Enroll Now ($${course.price})`}
-                  </Button>
-                )}
-
-                <div className="space-y-2 text-xs text-slate-400 pt-2 border-t border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Full Lifetime Access
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Access on Mobile & Desktop
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Verified PDF Certificate of Completion
-                  </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151' }}>
+                  <CheckCircle2 size={16} color="#1a8754" /> Access on Mobile & Desktop
                 </div>
-
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151' }}>
+                  <CheckCircle2 size={16} color="#1a8754" /> Verified PDF Certificate of Completion
+                </div>
               </div>
             </div>
 
@@ -266,17 +358,28 @@ const CourseDetailsPage = () => {
         </div>
       </section>
 
-      {/* BODY CONTENT GRID */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      {/* ── BODY CONTENT CONTAINER ── */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', width: '100%', display: 'flex', flexDirection: 'column', gap: 40 }}>
         
-        {/* Learning Objectives */}
+        {/* What You Will Learn */}
         {course.learningObjectives && course.learningObjectives.length > 0 && (
-          <section className="p-8 glass-panel rounded-3xl border-slate-800 space-y-4">
-            <h3 className="text-xl font-bold font-outfit text-white">What You Will Learn</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-300">
+          <section style={{
+            background: '#f0fdf4',
+            border: '1px solid #d1fae5',
+            borderRadius: 8,
+            padding: 28,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 18
+          }}>
+            <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+              What You Will Learn
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
               {course.learningObjectives.map((obj, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, color: '#1c1d1f', lineHeight: 1.5 }}>
+                  <CheckCircle2 size={18} color="#1a8754" style={{ flexShrink: 0, marginTop: 2 }} />
                   <span>{obj}</span>
                 </div>
               ))}
@@ -285,83 +388,135 @@ const CourseDetailsPage = () => {
         )}
 
         {/* Course Curriculum Accordion */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold font-outfit text-white">Course Curriculum</h3>
-            <span className="text-xs text-slate-400">
+        <section style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+              Course Curriculum
+            </h3>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
               {course.sections?.length || 0} Sections
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {course.sections && course.sections.map((section, idx) => (
-              <div key={section._id || idx} className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
-                
-                {/* Section Header Accordion Button */}
+              <div key={section._id || idx} style={{
+                border: '1px solid #e5e7eb',
+                borderRadius: 8,
+                overflow: 'hidden',
+                background: '#ffffff'
+              }}>
+                {/* Header Accordion Button */}
                 <button
                   onClick={() => setExpandedSection(expandedSection === idx ? -1 : idx)}
-                  className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-900/60 transition-colors cursor-pointer"
+                  style={{
+                    width: '100%',
+                    padding: '16px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    textAlign: 'left',
+                    background: '#f9fafb',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-xs">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 6,
+                      background: '#ecfdf5',
+                      color: '#1a8754',
+                      border: '1px solid #d1fae5',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                      fontSize: 13
+                    }}>
                       {idx + 1}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold font-outfit text-white">{section.title}</h4>
-                      <p className="text-[11px] text-slate-400">
+                      <h4 style={{ fontSize: 15, fontWeight: 700, color: '#1c1d1f', margin: 0 }}>
+                        {section.title}
+                      </h4>
+                      <span style={{ fontSize: 12, color: '#6b7280' }}>
                         {section.lectures?.length || 0} Lectures {section.quiz ? '• 1 Quiz' : ''} {section.assignment ? '• 1 Assignment' : ''}
-                      </p>
+                      </span>
                     </div>
                   </div>
-                  {expandedSection === idx ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
+
+                  {expandedSection === idx ? <ChevronUp size={18} color="#6b7280" /> : <ChevronDown size={18} color="#6b7280" />}
                 </button>
 
-                {/* Section Lectures List */}
+                {/* Lectures List */}
                 {expandedSection === idx && (
-                  <div className="px-4 pb-4 pt-2 border-t border-slate-800/80 space-y-2 bg-slate-950/40">
+                  <div style={{ padding: '12px 20px', borderTop: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: 8, background: '#ffffff' }}>
                     {section.lectures && section.lectures.map((lec) => (
-                      <div key={lec._id} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/40 text-xs">
-                        <div className="flex items-center gap-2.5 text-slate-300">
-                          <Play className="w-4 h-4 text-indigo-400" />
+                      <div key={lec._id} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        borderRadius: 6,
+                        background: '#f9fafb',
+                        fontSize: 13
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#1c1d1f', fontWeight: 500 }}>
+                          <Play size={14} color="#1a8754" />
                           <span>{lec.title}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-slate-400">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#6b7280', fontSize: 12 }}>
                           <span>{lec.duration || '10:00'}</span>
                           {lec.isFreePreview ? (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Preview</span>
+                            <span style={{ padding: '2px 8px', borderRadius: 4, background: '#dcfce7', color: '#15803d', fontWeight: 700, fontSize: 11 }}>
+                              Preview
+                            </span>
                           ) : (
-                            <Lock className="w-3.5 h-3.5 text-slate-500" />
+                            <Lock size={14} color="#9ca3af" />
                           )}
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-
               </div>
             ))}
           </div>
         </section>
 
-        {/* Reviews & Student Ratings */}
-        <section className="space-y-6 pt-6 border-t border-slate-800">
-          <h3 className="text-2xl font-bold font-outfit text-white">Student Reviews</h3>
+        {/* Student Reviews */}
+        <section style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 16, borderTop: '1px solid #e5e7eb' }}>
+          <h3 style={{ fontSize: 22, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+            Student Reviews
+          </h3>
 
-          {/* Add Review Form for Enrolled Students */}
+          {/* Add Review Form */}
           {isAuthenticated && isEnrolled && (
-            <form onSubmit={handleReviewSubmit} className="glass-panel p-6 rounded-2xl border-slate-800 space-y-4">
-              <h4 className="text-sm font-bold text-white font-outfit">Leave a Course Review</h4>
+            <form onSubmit={handleReviewSubmit} style={{
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              padding: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 16
+            }}>
+              <h4 style={{ fontSize: 15, fontWeight: 700, color: '#1c1d1f', margin: 0 }}>
+                Leave a Course Review
+              </h4>
               
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-300 font-medium">Rating:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 13, color: '#4b5563', fontWeight: 600 }}>Rating:</span>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
                     type="button"
                     onClick={() => setNewRating(star)}
-                    className="p-1 cursor-pointer"
+                    style={{ background: 'none', border: 'none', padding: 2, cursor: 'pointer' }}
                   >
-                    <Star className={`w-5 h-5 ${star <= newRating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`} />
+                    <Star size={20} color="#f59e0b" fill={star <= newRating ? '#f59e0b' : 'none'} />
                   </button>
                 ))}
               </div>
@@ -371,39 +526,80 @@ const CourseDetailsPage = () => {
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Share your learning experience..."
                 rows={3}
-                className="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                style={{
+                  width: '100%',
+                  padding: 12,
+                  borderRadius: 6,
+                  border: '1px solid #d1d5db',
+                  fontSize: 14,
+                  outline: 'none',
+                  color: '#1c1d1f'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#1a8754'}
+                onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
               />
 
-              <Button type="submit" variant="primary" size="sm" disabled={reviewSubmitting}>
+              <button
+                type="submit"
+                disabled={reviewSubmitting}
+                style={{
+                  alignSelf: 'flex-start',
+                  padding: '10px 20px',
+                  borderRadius: 4,
+                  background: '#1a8754',
+                  color: '#ffffff',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: reviewSubmitting ? 'not-allowed' : 'pointer'
+                }}
+              >
                 {reviewSubmitting ? 'Publishing...' : 'Submit Review'}
-              </Button>
+              </button>
             </form>
           )}
 
           {/* Reviews List */}
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {reviews.length === 0 ? (
-              <p className="text-xs text-slate-400">No reviews yet for this course. Be the first to leave feedback!</p>
+              <p style={{ fontSize: 13, color: '#6b7280', margin: 0 }}>
+                No reviews yet for this course. Be the first to leave feedback!
+              </p>
             ) : (
               reviews.map((rev, i) => (
-                <div key={rev._id || i} className="p-4 glass-card rounded-2xl border-slate-800/80 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <img src={rev.student?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80'} alt={rev.student?.name} className="w-8 h-8 rounded-full" />
-                      <span className="text-xs font-bold text-white font-outfit">{rev.student?.name || 'Student'}</span>
+                <div key={rev._id || i} style={{
+                  background: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: 8,
+                  padding: '16px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <img
+                        src={rev.student?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80'}
+                        alt={rev.student?.name}
+                        style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover' }}
+                      />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#1c1d1f' }}>
+                        {rev.student?.name || 'Student'}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       {[...Array(5)].map((_, s) => (
-                        <Star key={s} className={`w-3.5 h-3.5 ${s < rev.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-700'}`} />
+                        <Star key={s} size={14} color="#f59e0b" fill={s < rev.rating ? '#f59e0b' : 'none'} />
                       ))}
                     </div>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">{rev.comment}</p>
+                  <p style={{ fontSize: 13, color: '#4b5563', margin: 0, lineHeight: 1.6 }}>
+                    {rev.comment}
+                  </p>
                 </div>
               ))
             )}
           </div>
-
         </section>
 
       </div>

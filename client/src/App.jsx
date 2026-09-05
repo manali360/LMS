@@ -1,6 +1,6 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 
 // Public Pages
@@ -30,6 +30,22 @@ import AdminDashboard from './pages/AdminDashboard';
 // Protected Guard
 import ProtectedRoute from './components/common/ProtectedRoute';
 
+// Smart Dashboard Redirect Component
+const DashboardRedirect = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  if (isLoading) {
+    return (
+      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a8754', fontWeight: 600 }}>
+        Loading dashboard...
+      </div>
+    );
+  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.role === 'admin') return <Navigate to="/admin/dashboard" replace />;
+  if (user?.role === 'instructor') return <Navigate to="/instructor/dashboard" replace />;
+  return <Navigate to="/student/dashboard" replace />;
+};
+
 function App() {
   return (
     <AuthProvider>
@@ -43,6 +59,13 @@ function App() {
           <Route path="courses" element={<CourseBrowsePage />} />
           <Route path="courses/:id" element={<CourseDetailsPage />} />
           <Route path="verify-certificate/:certificateId" element={<VerifyCertificatePage />} />
+
+          {/* Universal Dashboard Redirect Routes */}
+          <Route path="dashboard" element={<DashboardRedirect />} />
+          <Route path="daashboard" element={<DashboardRedirect />} />
+          <Route path="student" element={<Navigate to="/student/dashboard" replace />} />
+          <Route path="instructor" element={<Navigate to="/instructor/dashboard" replace />} />
+          <Route path="admin" element={<Navigate to="/admin/dashboard" replace />} />
 
           {/* Student Protected Routes */}
           <Route element={<ProtectedRoute allowedRoles={['student', 'instructor', 'admin']} />}>

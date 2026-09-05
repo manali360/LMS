@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Users, BookOpen, CheckCircle, XCircle, ShieldCheck, AlertCircle, BarChart3, Lock, Loader2, Sparkles } from 'lucide-react';
+import { Users, BookOpen, AlertCircle, ShieldCheck, BarChart3, Loader2 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import api from '../services/api';
-import Button from '../components/common/Button';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -58,9 +57,9 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="w-10 h-10 text-pink-500 animate-spin" />
-        <p className="text-sm font-medium text-slate-400">Loading admin control panel...</p>
+      <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <Loader2 size={36} color="#1a8754" className="animate-spin" />
+        <p style={{ fontSize: 14, color: '#6b7280', fontWeight: 500 }}>Loading admin control panel...</p>
       </div>
     );
   }
@@ -75,90 +74,223 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px 24px', display: 'flex', flexDirection: 'column', gap: 32 }}>
       
-      {/* Header */}
-      <div>
-        <span className="text-xs font-bold uppercase tracking-widest text-pink-400 font-outfit">Platform Governance</span>
-        <h1 className="text-3xl font-extrabold font-outfit text-white">Admin Control Panel</h1>
+      {/* ── Header ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#1a8754', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Platform Governance
+        </span>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+          Admin Control Panel
+        </h1>
       </div>
 
-      {/* Metric Cards Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
-            <Users className="w-6 h-6" />
+      {/* ── Metric Cards Row ── */}
+      <div className="dashboard-metrics-grid">
+        
+        {/* Users Card */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#eff6ff',
+            border: '1px solid #dbeafe',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#2563eb',
+            flexShrink: 0
+          }}>
+            <Users size={22} />
           </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{totalUsers}</div>
-            <div className="text-xs text-slate-400">Total Registered Users</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{totalUsers}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Registered Users</span>
           </div>
         </div>
 
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-            <BookOpen className="w-6 h-6" />
+        {/* Courses Card */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#ecfdf5',
+            border: '1px solid #d1fae5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#1a8754',
+            flexShrink: 0
+          }}>
+            <BookOpen size={22} />
           </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{totalCourses}</div>
-            <div className="text-xs text-slate-400">Total Courses</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{totalCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Total Courses</span>
           </div>
         </div>
 
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            <AlertCircle className="w-6 h-6" />
+        {/* Pending Approvals Card */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#fffbeb',
+            border: '1px solid #fef3c7',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#d97706',
+            flexShrink: 0
+          }}>
+            <AlertCircle size={22} />
           </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{pendingCourses}</div>
-            <div className="text-xs text-slate-400">Pending Approvals</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{pendingCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Pending Approvals</span>
           </div>
         </div>
 
-        <div className="p-6 glass-panel rounded-2xl border-slate-800 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <ShieldCheck className="w-6 h-6" />
+        {/* Total Enrollments Card */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#ecfdf5',
+            border: '1px solid #d1fae5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#1a8754',
+            flexShrink: 0
+          }}>
+            <ShieldCheck size={22} />
           </div>
-          <div>
-            <div className="text-2xl font-bold font-outfit text-white">{totalEnrollments}</div>
-            <div className="text-xs text-slate-400">Total Enrollments</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{totalEnrollments}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Total Enrollments</span>
           </div>
         </div>
+
       </div>
 
-      {/* Overview Recharts */}
-      <div className="glass-panel p-6 rounded-3xl border-slate-800 space-y-4">
-        <h3 className="text-lg font-bold font-outfit text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-pink-400" /> Platform Growth Overview
-        </h3>
-        <div className="h-64 w-full">
+      {/* ── Overview Recharts ── */}
+      <div style={{
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
+        borderRadius: 8,
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <BarChart3 size={18} color="#1a8754" />
+          <span style={{ fontSize: 16, fontWeight: 700, color: '#1c1d1f' }}>Platform Growth Overview</span>
+        </div>
+
+        <div style={{ width: '100%', height: 240 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
-              <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} />
-              <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
-              <Bar dataKey="count" fill="#ec4899" radius={[8, 8, 0, 0]} />
+            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={{ stroke: '#e5e7eb' }} />
+              <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={{ stroke: '#e5e7eb' }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  color: '#1c1d1f',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  fontSize: '13px'
+                }}
+              />
+              <Bar dataKey="count" fill="#1a8754" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Tabs for Course Approvals & User Governance */}
-      <div className="glass-panel p-6 rounded-3xl border-slate-800 space-y-6">
-        <div className="flex items-center gap-4 border-b border-slate-800 pb-3">
+      {/* ── Tabs for Course Approvals & User Governance ── */}
+      <div style={{
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
+        borderRadius: 8,
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24, borderBottom: '1px solid #e5e7eb' }}>
           <button
             onClick={() => setActiveTab('courses')}
-            className={`text-sm font-bold font-outfit pb-1 transition-colors cursor-pointer ${
-              activeTab === 'courses' ? 'text-pink-400 border-b-2 border-pink-500' : 'text-slate-400'
-            }`}
+            style={{
+              padding: '10px 0',
+              fontSize: 14,
+              fontWeight: 700,
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              color: activeTab === 'courses' ? '#1a8754' : '#6b7280',
+              borderBottom: activeTab === 'courses' ? '2px solid #1a8754' : '2px solid transparent'
+            }}
           >
             Course Approvals ({courses.length})
           </button>
           <button
             onClick={() => setActiveTab('users')}
-            className={`text-sm font-bold font-outfit pb-1 transition-colors cursor-pointer ${
-              activeTab === 'users' ? 'text-pink-400 border-b-2 border-pink-500' : 'text-slate-400'
-            }`}
+            style={{
+              padding: '10px 0',
+              fontSize: 14,
+              fontWeight: 700,
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              color: activeTab === 'users' ? '#1a8754' : '#6b7280',
+              borderBottom: activeTab === 'users' ? '2px solid #1a8754' : '2px solid transparent'
+            }}
           >
             User Governance ({users.length})
           </button>
@@ -166,51 +298,74 @@ const AdminDashboard = () => {
 
         {/* Tab 1: Course Approvals */}
         {activeTab === 'courses' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/90 uppercase text-slate-400 font-semibold border-b border-slate-800">
-                <tr>
-                  <th className="p-3">Course Title</th>
-                  <th className="p-3">Instructor</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3 text-right">Approval Actions</th>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 13 }}>
+              <thead>
+                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Course Title</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Instructor</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Category</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Status</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280', textAlign: 'right' }}>Approval Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody>
                 {courses.map((course) => (
-                  <tr key={course._id} className="hover:bg-slate-900/40 transition-colors">
-                    <td className="p-3 font-semibold text-white font-outfit">{course.title}</td>
-                    <td className="p-3">{course.instructor?.name || 'N/A'}</td>
-                    <td className="p-3">{course.category?.name || 'General'}</td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
-                        course.approvalStatus === 'published'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          : course.approvalStatus === 'pending'
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                          : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                      }`}>
+                  <tr key={course._id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                    <td style={{ padding: '14px 16px', fontWeight: 700, color: '#1c1d1f' }}>{course.title}</td>
+                    <td style={{ padding: '14px 16px', color: '#4b5563' }}>{course.instructor?.name || 'N/A'}</td>
+                    <td style={{ padding: '14px 16px', color: '#4b5563' }}>{course.category?.name || 'General'}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{
+                        padding: '4px 10px',
+                        borderRadius: 20,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        background: course.approvalStatus === 'published' ? '#dcfce7' : course.approvalStatus === 'pending' ? '#fef3c7' : '#fee2e2',
+                        color: course.approvalStatus === 'published' ? '#15803d' : course.approvalStatus === 'pending' ? '#92400e' : '#dc2626',
+                        border: `1px solid ${course.approvalStatus === 'published' ? '#bbf7d0' : course.approvalStatus === 'pending' ? '#fde68a' : '#fecaca'}`
+                      }}>
                         {course.approvalStatus}
                       </span>
                     </td>
-                    <td className="p-3 text-right space-x-2">
-                      {course.approvalStatus !== 'published' && (
-                        <button
-                          onClick={() => handleUpdateCourseStatus(course._id, 'published')}
-                          className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-500"
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {course.approvalStatus !== 'rejected' && (
-                        <button
-                          onClick={() => handleUpdateCourseStatus(course._id, 'rejected')}
-                          className="px-2.5 py-1 rounded-lg bg-rose-600 text-white font-semibold hover:bg-rose-500"
-                        >
-                          Reject
-                        </button>
-                      )}
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+                        {course.approvalStatus !== 'published' && (
+                          <button
+                            onClick={() => handleUpdateCourseStatus(course._id, 'published')}
+                            style={{
+                              padding: '6px 14px',
+                              borderRadius: 4,
+                              background: '#1a8754',
+                              color: '#ffffff',
+                              fontWeight: 700,
+                              fontSize: 12,
+                              border: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Approve
+                          </button>
+                        )}
+                        {course.approvalStatus !== 'rejected' && (
+                          <button
+                            onClick={() => handleUpdateCourseStatus(course._id, 'rejected')}
+                            style={{
+                              padding: '6px 14px',
+                              borderRadius: 4,
+                              background: '#fee2e2',
+                              border: '1px solid #fecaca',
+                              color: '#dc2626',
+                              fontWeight: 700,
+                              fontSize: 12,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Reject
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -221,40 +376,58 @@ const AdminDashboard = () => {
 
         {/* Tab 2: User Governance */}
         {activeTab === 'users' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/90 uppercase text-slate-400 font-semibold border-b border-slate-800">
-                <tr>
-                  <th className="p-3">User</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Role</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3 text-right">Account Governance</th>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 13 }}>
+              <thead>
+                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>User</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Email</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Role</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280' }}>Status</th>
+                  <th style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', color: '#6b7280', textAlign: 'right' }}>Account Governance</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody>
                 {users.map((u) => (
-                  <tr key={u._id} className="hover:bg-slate-900/40 transition-colors">
-                    <td className="p-3 font-semibold text-white flex items-center gap-2">
-                      <img src={u.avatar} alt={u.name} className="w-7 h-7 rounded-full" />
-                      <span>{u.name}</span>
+                  <tr key={u._id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                    <td style={{ padding: '14px 16px', fontWeight: 700, color: '#1c1d1f' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <img src={u.avatar} alt={u.name} style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                        <span>{u.name}</span>
+                      </div>
                     </td>
-                    <td className="p-3">{u.email}</td>
-                    <td className="p-3 uppercase font-bold text-indigo-400">{u.role}</td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
-                        u.isSuspended ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'
-                      }`}>
+                    <td style={{ padding: '14px 16px', color: '#4b5563' }}>{u.email}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: '#1a8754' }}>{u.role}</span>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{
+                        padding: '4px 10px',
+                        borderRadius: 20,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        background: u.isSuspended ? '#fee2e2' : '#dcfce7',
+                        color: u.isSuspended ? '#dc2626' : '#15803d',
+                        border: `1px solid ${u.isSuspended ? '#fecaca' : '#bbf7d0'}`
+                      }}>
                         {u.isSuspended ? 'Suspended' : 'Active'}
                       </span>
                     </td>
-                    <td className="p-3 text-right">
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
                       {u.role !== 'admin' && (
                         <button
                           onClick={() => handleToggleSuspend(u._id)}
-                          className={`px-3 py-1 rounded-lg font-semibold ${
-                            u.isSuspended ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-rose-600 hover:bg-rose-500 text-white'
-                          }`}
+                          style={{
+                            padding: '6px 14px',
+                            borderRadius: 4,
+                            background: u.isSuspended ? '#1a8754' : '#fee2e2',
+                            border: `1px solid ${u.isSuspended ? '#1a8754' : '#fecaca'}`,
+                            color: u.isSuspended ? '#ffffff' : '#dc2626',
+                            fontWeight: 700,
+                            fontSize: 12,
+                            cursor: 'pointer'
+                          }}
                         >
                           {u.isSuspended ? 'Activate Account' : 'Suspend User'}
                         </button>

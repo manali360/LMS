@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, SlidersHorizontal, BookOpen, Star, Clock, Users, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Search, BookOpen, Star, Clock, Users, ArrowRight, Loader2 } from 'lucide-react';
 import api from '../services/api';
-import Button from '../components/common/Button';
 
 const CourseBrowsePage = () => {
   const [courses, setCourses] = useState([]);
@@ -15,6 +14,8 @@ const CourseBrowsePage = () => {
   const [sortOption, setSortOption] = useState('latest');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const fallbackThumbnail = 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&auto=format&fit=crop&q=80';
 
   // Fetch Categories
   useEffect(() => {
@@ -61,40 +62,74 @@ const CourseBrowsePage = () => {
   }, [search, selectedCategory, selectedLevel, priceFilter, sortOption, page]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px 24px', display: 'flex', flexDirection: 'column', gap: 28 }}>
       
-      {/* Header */}
-      <div className="space-y-3 text-center md:text-left">
-        <span className="text-xs font-bold uppercase tracking-widest text-indigo-400 font-outfit">Marketplace Catalog</span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold font-outfit text-white">Explore Professional Courses</h1>
-        <p className="text-slate-400 text-sm max-w-xl">
+      {/* ── Page Header ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#1a8754', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          Marketplace Catalog
+        </span>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f', margin: 0, lineHeight: 1.2 }}>
+          Explore Professional Courses
+        </h1>
+        <p style={{ fontSize: 14, color: '#4b5563', margin: 0, maxWidth: 600, lineHeight: 1.6 }}>
           Discover top-tier educational courses. Filter by category, difficulty level, and price to find your next skill.
         </p>
       </div>
 
-      {/* Search & Filter Control Bar */}
-      <div className="p-4 glass-panel rounded-2xl border border-slate-800 flex flex-col lg:flex-row gap-4 justify-between items-center">
-        
+      {/* ── Search & Filter Control Bar ── */}
+      <div style={{
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
+        borderRadius: 8,
+        padding: '16px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 16,
+        flexWrap: 'wrap',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+      }}>
         {/* Search Input */}
-        <div className="relative w-full lg:w-96">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+        <div style={{ position: 'relative', flex: '1 1 300px', maxWidth: 460 }}>
+          <Search size={16} color="#9ca3af" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
           <input
             type="text"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             placeholder="Search by title, instructor, skill..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            style={{
+              width: '100%',
+              padding: '10px 16px 10px 40px',
+              border: '1px solid #d1d5db',
+              borderRadius: 6,
+              fontSize: 14,
+              outline: 'none',
+              color: '#1c1d1f',
+              background: '#ffffff'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#1a8754'}
+            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </div>
 
         {/* Filter Controls Row */}
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-          
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           {/* Level Filter */}
           <select
             value={selectedLevel}
             onChange={(e) => { setSelectedLevel(e.target.value); setPage(1); }}
-            className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs font-medium text-slate-200 focus:outline-none"
+            style={{
+              padding: '9px 12px',
+              border: '1px solid #d1d5db',
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              color: '#374151',
+              background: '#ffffff',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
           >
             <option value="All">All Levels</option>
             <option value="Beginner">Beginner</option>
@@ -106,7 +141,17 @@ const CourseBrowsePage = () => {
           <select
             value={priceFilter}
             onChange={(e) => { setPriceFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs font-medium text-slate-200 focus:outline-none"
+            style={{
+              padding: '9px 12px',
+              border: '1px solid #d1d5db',
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              color: '#374151',
+              background: '#ffffff',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
           >
             <option value="all">All Prices</option>
             <option value="free">Free Courses</option>
@@ -117,7 +162,17 @@ const CourseBrowsePage = () => {
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs font-medium text-slate-200 focus:outline-none"
+            style={{
+              padding: '9px 12px',
+              border: '1px solid #d1d5db',
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              color: '#374151',
+              background: '#ffffff',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
           >
             <option value="latest">Sort: Newest First</option>
             <option value="popular">Sort: Most Popular</option>
@@ -125,111 +180,250 @@ const CourseBrowsePage = () => {
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
           </select>
-
         </div>
       </div>
 
-      {/* Category Pills Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      {/* ── Category Pills Bar ── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        overflowX: 'auto',
+        paddingBottom: 6,
+        scrollbarWidth: 'none'
+      }}>
         <button
           onClick={() => { setSelectedCategory('All'); setPage(1); }}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-            selectedCategory === 'All'
-              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-              : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
-          }`}
+          style={{
+            padding: '7px 16px',
+            borderRadius: 20,
+            fontSize: 13,
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+            cursor: 'pointer',
+            border: selectedCategory === 'All' ? '1px solid #1a8754' : '1px solid #e5e7eb',
+            background: selectedCategory === 'All' ? '#1a8754' : '#ffffff',
+            color: selectedCategory === 'All' ? '#ffffff' : '#4b5563',
+            boxShadow: selectedCategory === 'All' ? '0 1px 3px rgba(26,135,84,0.3)' : 'none',
+            transition: 'all 0.15s ease'
+          }}
         >
           All Categories
         </button>
 
-        {categories.map((cat) => (
-          <button
-            key={cat._id}
-            onClick={() => { setSelectedCategory(cat._id); setPage(1); }}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              selectedCategory === cat._id
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
-            }`}
-          >
-            {cat.name}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const isSelected = selectedCategory === cat._id;
+          return (
+            <button
+              key={cat._id}
+              onClick={() => { setSelectedCategory(cat._id); setPage(1); }}
+              style={{
+                padding: '7px 16px',
+                borderRadius: 20,
+                fontSize: 13,
+                fontWeight: 600,
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                border: isSelected ? '1px solid #1a8754' : '1px solid #e5e7eb',
+                background: isSelected ? '#1a8754' : '#ffffff',
+                color: isSelected ? '#ffffff' : '#4b5563',
+                boxShadow: isSelected ? '0 1px 3px rgba(26,135,84,0.3)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              {cat.name}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Course Grid */}
+      {/* ── Courses Grid ── */}
       {loading ? (
-        <div className="min-h-[40vh] flex flex-col items-center justify-center space-y-3">
-          <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
-          <p className="text-sm font-medium text-slate-400">Fetching courses...</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 0', gap: 12 }}>
+          <Loader2 size={36} color="#1a8754" className="animate-spin" />
+          <span style={{ fontSize: 14, color: '#6b7280', fontWeight: 500 }}>Fetching courses...</span>
         </div>
       ) : courses.length === 0 ? (
-        <div className="p-12 text-center glass-panel rounded-3xl space-y-4 max-w-md mx-auto">
-          <BookOpen className="w-12 h-12 text-slate-500 mx-auto" />
-          <h3 className="text-lg font-bold font-outfit text-white">No Courses Found</h3>
-          <p className="text-xs text-slate-400">Try refining your search query or reset category filters.</p>
-          <Button variant="secondary" size="sm" onClick={() => { setSearch(''); setSelectedCategory('All'); setSelectedLevel('All'); setPriceFilter('all'); }}>
+        <div style={{
+          background: '#f0fdf4',
+          border: '1px solid #d1fae5',
+          borderRadius: 8,
+          padding: '48px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          gap: 16
+        }}>
+          <BookOpen size={40} color="#1a8754" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxWidth: 420 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1c1d1f', margin: 0 }}>No Courses Found</h3>
+            <p style={{ fontSize: 13, color: '#4b5563', margin: 0 }}>Try refining your search query or resetting filters.</p>
+          </div>
+          <button
+            onClick={() => { setSearch(''); setSelectedCategory('All'); setSelectedLevel('All'); setPriceFilter('all'); }}
+            style={{
+              padding: '10px 20px',
+              borderRadius: 4,
+              background: '#1a8754',
+              color: '#ffffff',
+              fontSize: 13,
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
             Reset All Filters
-          </Button>
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
           {courses.map((course) => (
-            <div key={course._id} className="glass-card rounded-2xl overflow-hidden group flex flex-col h-full hover:-translate-y-1.5 transition-all duration-300">
-              
-              {/* Thumbnail */}
-              <div className="relative aspect-video overflow-hidden bg-slate-900">
+            <div
+              key={course._id}
+              style={{
+                background: '#ffffff',
+                border: '1px solid #e5e7eb',
+                borderRadius: 8,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.08)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)';
+                e.currentTarget.style.transform = 'none';
+              }}
+            >
+              {/* Thumbnail Container */}
+              <div style={{ position: 'relative', width: '100%', height: 165, background: '#f3f4f6', overflow: 'hidden' }}>
                 <img
-                  src={course.thumbnail}
+                  src={course.thumbnail || fallbackThumbnail}
                   alt={course.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = fallbackThumbnail;
+                  }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-950/80 text-indigo-300 border border-indigo-500/30">
+                
+                {/* Category badge */}
+                <span style={{
+                  position: 'absolute',
+                  top: 10,
+                  left: 10,
+                  padding: '4px 10px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  color: '#1c1d1f',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.12)'
+                }}>
                   {course.category?.name || 'Education'}
                 </span>
-                <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                  course.isFree ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-indigo-600 text-white'
-                }`}>
+
+                {/* Price badge */}
+                <span style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  padding: '4px 10px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 800,
+                  background: course.isFree ? '#dcfce7' : '#1a8754',
+                  color: course.isFree ? '#15803d' : '#ffffff',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.12)'
+                }}>
                   {course.isFree ? 'FREE' : `$${course.price}`}
                 </span>
               </div>
 
               {/* Body */}
-              <div className="p-5 flex flex-col flex-1 justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      <strong className="text-slate-200">{course.averageRating || 5.0}</strong> ({course.ratingsCount || 0})
+              <div style={{ padding: '18px 16px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', gap: 14 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {/* Rating & Level */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#1c1d1f', fontWeight: 700 }}>
+                      <Star size={14} color="#f59e0b" fill="#f59e0b" />
+                      {course.averageRating || 5.0}
+                      <span style={{ color: '#6b7280', fontWeight: 400 }}>({course.ratingsCount || 0})</span>
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium text-[11px]">
-                      {course.level}
+                    <span style={{ padding: '2px 8px', borderRadius: 4, background: '#f3f4f6', color: '#4b5563', fontSize: 11, fontWeight: 600 }}>
+                      {course.level || 'All Levels'}
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white font-outfit line-clamp-2 group-hover:text-indigo-400 transition-colors">
+                  {/* Course Title */}
+                  <h3 style={{
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: '#1c1d1f',
+                    margin: 0,
+                    lineHeight: 1.35,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    minHeight: 40
+                  }}>
                     {course.title}
                   </h3>
 
-                  <p className="text-xs text-slate-400">
-                    By <span className="text-slate-300">{course.instructor?.name || 'Instructor'}</span>
+                  {/* Instructor */}
+                  <p style={{ fontSize: 12, color: '#6b7280', margin: 0 }}>
+                    By <span style={{ color: '#374151', fontWeight: 600 }}>{course.instructor?.name || 'Instructor'}</span>
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-indigo-400" /> {course.duration || '12h'}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5 text-pink-400" /> {course.totalStudents || 0}
-                  </span>
-                </div>
+                {/* Footer Meta & Button */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontSize: 12,
+                    color: '#6b7280',
+                    borderTop: '1px solid #f3f4f6',
+                    paddingTop: 10
+                  }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Clock size={13} color="#1a8754" /> {course.duration || '12 Hours'}
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Users size={13} color="#6b7280" /> {course.totalStudents || 0}
+                    </span>
+                  </div>
 
-                <Link to={`/courses/${course._id}`}>
-                  <Button variant="secondary" size="sm" fullWidth icon={ArrowRight} className="group-hover:bg-indigo-600 group-hover:text-white">
-                    View Course
-                  </Button>
-                </Link>
+                  <Link to={`/courses/${course._id}`} style={{ textDecoration: 'none' }}>
+                    <button style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      borderRadius: 4,
+                      background: '#1a8754',
+                      color: '#ffffff',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      transition: 'background 0.15s'
+                    }}>
+                      View Course <ArrowRight size={14} />
+                    </button>
+                  </Link>
+                </div>
               </div>
 
             </div>
@@ -237,28 +431,48 @@ const CourseBrowsePage = () => {
         </div>
       )}
 
-      {/* Pagination */}
+      {/* ── Pagination ── */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 pt-6">
-          <Button
-            variant="secondary"
-            size="sm"
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 12 }}>
+          <button
             disabled={page === 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 4,
+              fontSize: 13,
+              fontWeight: 600,
+              background: '#ffffff',
+              border: '1px solid #d1d5db',
+              color: '#374151',
+              cursor: page === 1 ? 'not-allowed' : 'pointer',
+              opacity: page === 1 ? 0.4 : 1
+            }}
           >
             Previous
-          </Button>
-          <span className="px-4 py-2 text-xs font-semibold text-slate-300 flex items-center">
+          </button>
+          
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#6b7280', padding: '0 8px' }}>
             Page {page} of {totalPages}
           </span>
-          <Button
-            variant="secondary"
-            size="sm"
+          
+          <button
             disabled={page === totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 4,
+              fontSize: 13,
+              fontWeight: 600,
+              background: '#ffffff',
+              border: '1px solid #d1d5db',
+              color: '#374151',
+              cursor: page === totalPages ? 'not-allowed' : 'pointer',
+              opacity: page === totalPages ? 0.4 : 1
+            }}
           >
             Next
-          </Button>
+          </button>
         </div>
       )}
 

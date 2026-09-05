@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Award, CheckCircle2, Play, Clock, Sparkles, Star, ArrowRight, Loader2, BarChart2 } from 'lucide-react';
+import { BookOpen, Award, CheckCircle2, Play, Clock, Sparkles, ArrowRight, Loader2, BarChart2 } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import Button from '../components/common/Button';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -43,189 +42,494 @@ const StudentDashboard = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px 24px', display: 'flex', flexDirection: 'column', gap: 32 }}>
       
-      {/* Welcome Banner */}
-      <div className="relative rounded-3xl p-8 bg-gradient-to-r from-indigo-950/90 via-purple-950/80 to-slate-950 border border-indigo-500/30 overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="relative z-10 space-y-2.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-300 text-xs font-semibold border border-indigo-500/30">
-            <Sparkles className="w-3.5 h-3.5" /> Student Workspace
+      {/* ── Welcome Banner ── */}
+      <div style={{
+        background: '#f0fdf4',
+        border: '1px solid #d1fae5',
+        borderRadius: 8,
+        padding: '32px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '4px 12px',
+            borderRadius: 20,
+            background: '#dcfce7',
+            border: '1px solid #bbf7d0',
+            color: '#15803d',
+            fontSize: 12,
+            fontWeight: 700,
+            width: 'fit-content'
+          }}>
+            <Sparkles size={14} color="#16a34a" /> Student Workspace
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight">
-            Welcome back, <span className="gradient-text-indigo">{user?.name}</span> 👋
-          </h1>
-          <p className="text-slate-300 text-sm max-w-xl leading-relaxed">
-            Track your ongoing masterclasses, take timed quizzes, submit assignments, and claim your verified certificates.
-          </p>
-        </div>
-      </div>
 
-      {/* Metric Cards Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="p-6 glass-panel rounded-2xl border border-slate-800/80 flex items-center gap-4 hover:border-indigo-500/30 transition-all">
-          <div className="w-12 h-12 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
-            <BookOpen className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-outfit text-white">{totalCourses}</div>
-            <div className="text-xs font-medium text-slate-400">Total Enrolled</div>
-          </div>
+          {(user?.role === 'instructor' || user?.role === 'admin') && (
+            <Link to={user?.role === 'admin' ? '/admin/dashboard' : '/instructor/dashboard'} style={{ textDecoration: 'none' }}>
+              <button style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 16px',
+                borderRadius: 4,
+                background: '#1a8754',
+                color: '#fff',
+                fontSize: 13,
+                fontWeight: 700,
+                border: 'none',
+                cursor: 'pointer'
+              }}>
+                {user?.role === 'admin' ? 'Open Admin Panel →' : 'Switch to Instructor Studio →'}
+              </button>
+            </Link>
+          )}
         </div>
-
-        <div className="p-6 glass-panel rounded-2xl border border-slate-800/80 flex items-center gap-4 hover:border-purple-500/30 transition-all">
-          <div className="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
-            <Clock className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-outfit text-white">{inProgressCourses}</div>
-            <div className="text-xs font-medium text-slate-400">In Progress</div>
-          </div>
-        </div>
-
-        <div className="p-6 glass-panel rounded-2xl border border-slate-800/80 flex items-center gap-4 hover:border-emerald-500/30 transition-all">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <CheckCircle2 className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-outfit text-white">{completedCourses}</div>
-            <div className="text-xs font-medium text-slate-400">Completed</div>
-          </div>
-        </div>
-
-        <div className="p-6 glass-panel rounded-2xl border border-slate-800/80 flex items-center gap-4 hover:border-amber-500/30 transition-all">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-            <Award className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-outfit text-white">{completedCourses}</div>
-            <div className="text-xs font-medium text-slate-400">Certificates Earned</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Analytics Chart & Continue Learning */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Learning Activity Chart */}
-        <div className="lg:col-span-7 glass-panel p-6 rounded-3xl border border-slate-800/80 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold font-outfit text-white flex items-center gap-2">
-              <BarChart2 className="w-5 h-5 text-indigo-400" /> Weekly Learning Velocity
-            </h3>
-            <span className="text-xs font-medium text-slate-400">Hours spent this week</span>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1c1d1f', margin: 0, lineHeight: 1.25 }}>
+          Welcome back, <span style={{ color: '#1a8754' }}>{user?.name}</span> 👋
+        </h1>
+        
+        <p style={{ fontSize: 14, color: '#4b5563', margin: 0, maxWidth: 620, lineHeight: 1.6 }}>
+          Track your ongoing masterclasses, take timed quizzes, submit assignments, and claim your verified certificates.
+        </p>
+      </div>
+
+      {/* ── Metric Cards ── */}
+      <div className="dashboard-metrics-grid">
+        
+        {/* Card 1: Enrolled */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#ecfdf5',
+            border: '1px solid #d1fae5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#1a8754',
+            flexShrink: 0
+          }}>
+            <BookOpen size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{totalCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Total Enrolled</span>
+          </div>
+        </div>
+
+        {/* Card 2: In Progress */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#eff6ff',
+            border: '1px solid #dbeafe',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#2563eb',
+            flexShrink: 0
+          }}>
+            <Clock size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{inProgressCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>In Progress</span>
+          </div>
+        </div>
+
+        {/* Card 3: Completed */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#ecfdf5',
+            border: '1px solid #d1fae5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#1a8754',
+            flexShrink: 0
+          }}>
+            <CheckCircle2 size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{completedCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Completed</span>
+          </div>
+        </div>
+
+        {/* Card 4: Certificates */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 8,
+            background: '#fffbeb',
+            border: '1px solid #fef3c7',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#d97706',
+            flexShrink: 0
+          }}>
+            <Award size={22} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', lineHeight: 1 }}>{completedCourses}</span>
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>Certificates Earned</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Middle Section: Analytics & Continue Learning ── */}
+      <div className="dashboard-middle-grid">
+        
+        {/* Left: Weekly Learning Velocity Chart */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 20,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <BarChart2 size={18} color="#1a8754" />
+              <span style={{ fontSize: 16, fontWeight: 700, color: '#1c1d1f' }}>Weekly Learning Velocity</span>
+            </div>
+            <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 500 }}>Hours spent this week</span>
           </div>
 
-          <div className="h-64 w-full pt-2">
+          <div style={{ width: '100%', height: 240 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={activityData}>
+              <AreaChart data={activityData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#1a8754" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#1a8754" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="day" stroke="#64748b" fontSize={12} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={12} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
-                <Area type="monotone" dataKey="hours" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorHours)" />
+                <XAxis dataKey="day" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={{ stroke: '#e5e7eb' }} />
+                <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={{ stroke: '#e5e7eb' }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    color: '#1c1d1f',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    fontSize: '13px',
+                    padding: '8px 12px'
+                  }}
+                />
+                <Area type="monotone" dataKey="hours" stroke="#1a8754" strokeWidth={2.5} fillOpacity={1} fill="url(#colorHours)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Continue Learning Feature Box */}
-        <div className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-slate-800/80 flex flex-col justify-between space-y-4">
-          <div className="space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-400 font-outfit">Resume Study</span>
-            <h3 className="text-lg font-bold font-outfit text-white">Continue Learning</h3>
+        {/* Right: Continue Learning Feature Box */}
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          gap: 20,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#1a8754', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                Resume Study
+              </span>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+                Continue Learning
+              </h3>
+            </div>
 
             {enrollments.length > 0 && enrollments[0]?.course ? (
-              <div className="p-4 glass-card rounded-2xl space-y-3 border border-indigo-500/20">
-                <h4 className="text-sm font-bold font-outfit text-white">{enrollments[0].course.title}</h4>
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs text-slate-400">
+              <div style={{
+                background: '#f0fdf4',
+                border: '1px solid #d1fae5',
+                borderRadius: 8,
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#1c1d1f' }}>
+                  {enrollments[0].course.title}
+                </span>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6b7280' }}>
                     <span>Course Progress</span>
-                    <span className="font-bold text-indigo-400">{enrollments[0].progressPercentage}%</span>
+                    <strong style={{ color: '#1a8754' }}>{enrollments[0].progressPercentage}%</strong>
                   </div>
-                  <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden">
-                    <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-500" style={{ width: `${enrollments[0].progressPercentage}%` }}></div>
+                  <div style={{ width: '100%', height: 6, borderRadius: 99, background: '#e5e7eb', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', borderRadius: 99, background: '#1a8754', width: `${enrollments[0].progressPercentage}%`, transition: 'width 0.5s ease' }} />
                   </div>
                 </div>
-                <Link to={`/learning/${enrollments[0].course._id}`}>
-                  <Button variant="gradient" size="sm" fullWidth icon={Play} className="mt-2">
-                    Resume Lecture
-                  </Button>
+
+                <Link to={`/learning/${enrollments[0].course._id}`} style={{ textDecoration: 'none', marginTop: 4 }}>
+                  <button style={{
+                    width: '100%',
+                    padding: '10px 16px',
+                    borderRadius: 4,
+                    background: '#1a8754',
+                    color: '#ffffff',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    cursor: 'pointer'
+                  }}>
+                    <Play size={14} /> Resume Lecture
+                  </button>
                 </Link>
               </div>
             ) : (
-              <p className="text-xs text-slate-400 leading-relaxed">
-                You are not currently enrolled in any course. Discover top-rated masterclasses in the catalog!
-              </p>
+              <div style={{
+                background: '#f9fafb',
+                border: '1px solid #f3f4f6',
+                borderRadius: 8,
+                padding: '24px 16px',
+                textAlign: 'center',
+                color: '#6b7280',
+                fontSize: 13,
+                lineHeight: 1.6
+              }}>
+                You are not currently enrolled in any course. Explore the marketplace to get started!
+              </div>
             )}
           </div>
 
-          <Link to="/courses">
-            <Button variant="outline" size="sm" fullWidth icon={ArrowRight}>
-              Browse More Courses
-            </Button>
+          <Link to="/courses" style={{ textDecoration: 'none' }}>
+            <button style={{
+              width: '100%',
+              padding: '11px 16px',
+              borderRadius: 4,
+              background: '#ffffff',
+              color: '#1c1d1f',
+              border: '1px solid #1c1d1f',
+              fontSize: 14,
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              cursor: 'pointer',
+              transition: 'background 0.2s'
+            }}>
+              Browse More Courses <ArrowRight size={15} />
+            </button>
           </Link>
         </div>
 
       </div>
 
-      {/* Enrolled Courses Grid */}
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold font-outfit text-white">My Enrolled Courses</h3>
+      {/* ── My Enrolled Courses Section ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+            My Enrolled Courses
+          </h2>
+          {enrollments.length > 0 && (
+            <span style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
+              {enrollments.length} Course{enrollments.length > 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 0' }}>
+            <Loader2 size={32} color="#1a8754" className="animate-spin" />
           </div>
         ) : enrollments.length === 0 ? (
-          <div className="p-10 text-center glass-panel rounded-3xl border border-slate-800/80 space-y-4 max-w-lg mx-auto">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-500/15 border border-indigo-500/25 text-indigo-400 flex items-center justify-center mx-auto">
-              <BookOpen className="w-7 h-7" />
+          <div style={{
+            background: '#f0fdf4',
+            border: '1px solid #d1fae5',
+            borderRadius: 8,
+            padding: '48px 24px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            gap: 16
+          }}>
+            <div style={{
+              width: 54,
+              height: 54,
+              borderRadius: '50%',
+              background: '#dcfce7',
+              border: '1px solid #bbf7d0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#1a8754'
+            }}>
+              <BookOpen size={24} />
             </div>
-            <div className="space-y-1">
-              <h4 className="text-base font-bold font-outfit text-white">You haven't enrolled in any courses yet</h4>
-              <p className="text-xs text-slate-400">Explore our professional masterclasses and start your learning journey today.</p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, maxWidth: 440 }}>
+              <h4 style={{ fontSize: 17, fontWeight: 700, color: '#1c1d1f', margin: 0 }}>
+                No courses enrolled yet
+              </h4>
+              <p style={{ fontSize: 13, color: '#4b5563', margin: 0, lineHeight: 1.5 }}>
+                Discover top-rated online courses and start building your skills today.
+              </p>
             </div>
-            <Link to="/courses" className="inline-block pt-1">
-              <Button variant="gradient" size="md" icon={ArrowRight}>
-                Explore Courses
-              </Button>
+
+            <Link to="/courses" style={{ textDecoration: 'none' }}>
+              <button style={{
+                padding: '12px 28px',
+                borderRadius: 4,
+                background: '#1a8754',
+                color: '#ffffff',
+                fontSize: 14,
+                fontWeight: 700,
+                border: 'none',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.08)'
+              }}>
+                Find Courses
+              </button>
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
             {enrollments.map((item) => (
-              <div key={item._id} className="glass-card rounded-2xl p-5 border border-slate-800/80 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <img src={item.course?.thumbnail} alt={item.course?.title} className="w-full h-36 object-cover rounded-xl" />
-                  <h4 className="text-sm font-bold font-outfit text-white line-clamp-1">{item.course?.title}</h4>
-                  
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs text-slate-400">
+              <div key={item._id} style={{
+                background: '#ffffff',
+                border: '1px solid #e5e7eb',
+                borderRadius: 8,
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                gap: 16,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <img
+                    src={item.course?.thumbnail}
+                    alt={item.course?.title}
+                    style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 6 }}
+                  />
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1c1d1f', lineHeight: 1.3 }}>
+                    {item.course?.title}
+                  </span>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6b7280' }}>
                       <span>Progress</span>
-                      <span className="font-semibold text-white">{item.progressPercentage}%</span>
+                      <strong style={{ color: '#1a8754' }}>{item.progressPercentage}%</strong>
                     </div>
-                    <div className="w-full bg-slate-900 rounded-full h-2">
-                      <div className="bg-indigo-500 h-2 rounded-full" style={{ width: `${item.progressPercentage}%` }}></div>
+                    <div style={{ width: '100%', height: 6, borderRadius: 99, background: '#e5e7eb', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', borderRadius: 99, background: '#1a8754', width: `${item.progressPercentage}%` }} />
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center justify-between gap-2">
-                  <Link to={`/learning/${item.course?._id}`} className="flex-1">
-                    <Button variant="gradient" size="sm" fullWidth icon={Play}>
-                      Go to Course
-                    </Button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 4 }}>
+                  <Link to={`/learning/${item.course?._id}`} style={{ flex: 1, textDecoration: 'none' }}>
+                    <button style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      borderRadius: 4,
+                      background: '#1a8754',
+                      color: '#ffffff',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      border: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      cursor: 'pointer'
+                    }}>
+                      <Play size={14} /> Go to Course
+                    </button>
                   </Link>
 
                   {item.progressPercentage === 100 && (
-                    <Link to={`/certificate/${item.course?._id}`}>
-                      <Button variant="outline" size="sm" icon={Award} title="View Certificate" />
+                    <Link to={`/certificate/${item.course?._id}`} style={{ textDecoration: 'none' }}>
+                      <button style={{
+                        padding: '10px 14px',
+                        borderRadius: 4,
+                        background: '#ffffff',
+                        border: '1px solid #e5e7eb',
+                        color: '#d97706',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                      }} title="View Certificate">
+                        <Award size={16} />
+                      </button>
                     </Link>
                   )}
                 </div>

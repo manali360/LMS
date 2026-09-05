@@ -41,73 +41,128 @@ const VerifyCertificatePage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16 space-y-10">
+    <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px', display: 'flex', flexDirection: 'column', gap: 32 }}>
       
       {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center shadow-lg">
-          <ShieldCheck className="w-8 h-8" />
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: 12,
+          background: '#dcfce7', border: '1px solid #bbf7d0',
+          color: '#15803d', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 2px 8px rgba(22,163,74,0.15)'
+        }}>
+          <ShieldCheck size={28} />
         </div>
-        <h1 className="text-3xl font-extrabold font-outfit text-white">Public Certificate Verification</h1>
-        <p className="text-sm text-slate-400 max-w-md mx-auto">
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+          Public Certificate Verification
+        </h1>
+        <p style={{ fontSize: 14, color: '#6b7280', maxWidth: 460, margin: 0, lineHeight: 1.5 }}>
           Enter any LearnPulse Certificate ID below to verify its authenticity and student accreditation record.
         </p>
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSubmit} className="p-2 glass-panel rounded-2xl border-slate-800 flex gap-2">
-        <div className="relative flex-1">
-          <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" />
+      <form onSubmit={handleSubmit} style={{
+        background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 8,
+        padding: 8, display: 'flex', gap: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
+          <Search size={18} color="#9ca3af" style={{ position: 'absolute', left: 14 }} />
           <input
             type="text"
             value={certIdInput}
             onChange={(e) => setCertIdInput(e.target.value)}
             placeholder="e.g. LP-A8K2F9-2026"
-            className="w-full pl-11 pr-4 py-3 bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
+            style={{
+              width: '100%', padding: '12px 16px 12px 42px',
+              border: 'none', background: 'transparent',
+              fontSize: 14, color: '#1c1d1f', outline: 'none'
+            }}
           />
         </div>
-        <Button type="submit" variant="gradient" size="md" disabled={loading}>
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            padding: '12px 24px', borderRadius: 6,
+            background: '#1a8754', color: '#ffffff',
+            fontSize: 14, fontWeight: 700, border: 'none',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.7 : 1,
+            transition: 'background 0.15s'
+          }}
+        >
           {loading ? 'Verifying...' : 'Verify Credential'}
-        </Button>
+        </button>
       </form>
 
       {/* Verification Output Card */}
       {verificationResult && (
-        <div className="glass-panel p-8 rounded-3xl border-emerald-500/30 space-y-6 text-center shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+        <div style={{
+          background: '#ffffff', border: '1px solid #bbf7d0', borderRadius: 12,
+          padding: 32, display: 'flex', flexDirection: 'column', gap: 24,
+          textAlign: 'center', boxShadow: '0 4px 16px rgba(22,163,74,0.08)',
+          position: 'relative', overflow: 'hidden'
+        }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: '#1a8754' }}></div>
 
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold uppercase tracking-wider">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Authenticated & Valid
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '6px 16px', borderRadius: 20,
+            background: '#dcfce7', border: '1px solid #bbf7d0',
+            color: '#15803d', fontSize: 13, fontWeight: 700,
+            margin: '0 auto'
+          }}>
+            <CheckCircle2 size={16} color="#15803d" /> Authenticated & Valid
           </div>
 
-          <div className="space-y-2">
-            <div className="text-xs text-slate-400 font-mono uppercase">Certificate ID: {verificationResult.certificateId}</div>
-            <h2 className="text-2xl font-bold font-outfit text-white">{verificationResult.studentName}</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ fontSize: 12, color: '#6b7280', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Certificate ID: {verificationResult.certificateId}
+            </div>
+            <h2 style={{ fontSize: 26, fontWeight: 800, color: '#1c1d1f', margin: 0 }}>
+              {verificationResult.studentName}
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left pt-4 border-t border-slate-800/80 text-xs text-slate-300">
-            <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-              <span className="text-slate-500 flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-indigo-400" /> Course Completed</span>
-              <div className="font-bold text-white text-sm">{verificationResult.courseTitle}</div>
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16,
+            textAlign: 'left', paddingTop: 16, borderTop: '1px solid #f3f4f6'
+          }}>
+            <div style={{ padding: 16, borderRadius: 8, background: '#f9fafb', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span style={{ fontSize: 12, color: '#6b7280', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <BookOpen size={14} color="#1a8754" /> Course Completed
+              </span>
+              <div style={{ fontWeight: 700, color: '#1c1d1f', fontSize: 14 }}>
+                {verificationResult.courseTitle}
+              </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-              <span className="text-slate-500 flex items-center gap-1.5"><User className="w-4 h-4 text-purple-400" /> Instructor</span>
-              <div className="font-bold text-white text-sm">{verificationResult.instructorName}</div>
+            <div style={{ padding: 16, borderRadius: 8, background: '#f9fafb', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span style={{ fontSize: 12, color: '#6b7280', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <User size={14} color="#1a8754" /> Instructor
+              </span>
+              <div style={{ fontWeight: 700, color: '#1c1d1f', fontSize: 14 }}>
+                {verificationResult.instructorName}
+              </div>
             </div>
           </div>
 
-          <div className="text-xs text-slate-500 flex items-center justify-center gap-1">
-            <Calendar className="w-3.5 h-3.5" /> Issued on {new Date(verificationResult.issueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          <div style={{ fontSize: 13, color: '#6b7280', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <Calendar size={14} /> Issued on {new Date(verificationResult.issueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
       )}
 
       {error && (
-        <div className="p-6 glass-panel rounded-3xl border-rose-500/30 text-center space-y-3">
-          <XCircle className="w-10 h-10 text-rose-500 mx-auto" />
-          <h3 className="text-lg font-bold font-outfit text-white">Verification Failed</h3>
-          <p className="text-xs text-rose-300">{error}</p>
+        <div style={{
+          padding: 24, borderRadius: 8, background: '#fef2f2',
+          border: '1px solid #fecaca', textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8
+        }}>
+          <XCircle size={32} color="#dc2626" />
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: '#991b1b', margin: 0 }}>Verification Failed</h3>
+          <p style={{ fontSize: 13, color: '#b91c1c', margin: 0 }}>{error}</p>
         </div>
       )}
 

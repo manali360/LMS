@@ -178,7 +178,7 @@ const seedDatabase = async () => {
       {
         title: 'Data Structures & Algorithms in C++',
         description: 'Comprehensive guide to arrays, linked lists, trees, graphs, dynamic programming, and competitive coding techniques.',
-        thumbnail: 'https://images.unsplash.com/photo-1516116211223-48a122638e59?w=800&auto=format&fit=crop&q=80',
+        thumbnail: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&auto=format&fit=crop&q=80',
         instructor: instructor2._id,
         category: progCat._id,
         level: 'Intermediate',
